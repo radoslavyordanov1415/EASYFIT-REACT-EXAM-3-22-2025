@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 
 
 import NavBar from "./components/NavBar"
+import { AuthProvider } from "./components/context/authContext"
+import PublicRoute from "./components/guards/PublicRoutes"
+import ProtectedRoute from "./components/guards/ProtectedRoutes"
 
 
 import Home from "./pages/Home"
@@ -20,21 +23,32 @@ function App() {
 
 
   return (
-    <>
+    <div className="App">
       <Router>
-        <NavBar />
-        <Routes>
-          <Route path="/" exact element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/create" element={<Create />} />
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/edit/:id" element={<Edit />} />
-          <Route path="/logout" element={<Logout />} />
-        </Routes>
+        <AuthProvider>
+          <NavBar />
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<Home />} />
+
+            {/* Auth routes - redirect to home if already logged in */}
+            <Route element={<PublicRoute />}>
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+            </Route>
+
+            {/* Protected routes - require authentication */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/logout" element={<Logout />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/create" element={<Create />} />
+              <Route path="/edit/:outfitId" element={<Edit />} />
+              <Route path="/catalog" element={<Catalog />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </Router>
-    </>
+    </div>
   )
 }
 
