@@ -1,0 +1,158 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.navbar {
+    width: 100%;
+    height: 80px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    box-sizing: border-box;
+    backdrop-filter: blur(5px);
+}
+
+.leftSide {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.leftSide img {
+    width: 160px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.leftSide img:hover {
+    transform: scale(0.9);
+    filter: hue-rotate(-15deg) saturate(1.2);
+}
+
+.rightSide {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+.navbar a,
+.navbar button {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease-in-out;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.navbar a:hover,
+.navbar button:hover {
+    color: #00bcd4;
+}
+
+.menuButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    display: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mobileMenu {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 200px;
+    background-color: #1a1f23;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.mobileMenu a,
+.mobileMenu button {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.mobileMenu a:hover,
+.mobileMenu button:hover {
+    background-color: #00bcd4;
+    border-radius: 5px;
+}
+
+.mobileMenu.open {
+    display: flex;
+}
+
+@media only screen and (max-width: 768px) {
+    .rightSide a {
+        display: none;
+    }
+
+    .menuButton {
+        display: block;
+    }
+
+    .mobileMenu {
+        top: 60px;
+        right: 20px;
+        width: 100%;
+        max-width: 250px;
+    }
+
+    .mobileMenu a,
+    .mobileMenu button {
+        padding: 15px;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    overflow-x: hidden;
+}
