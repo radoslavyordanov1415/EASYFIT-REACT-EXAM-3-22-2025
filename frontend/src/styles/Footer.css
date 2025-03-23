@@ -1,0 +1,34 @@
+.footer {
+    width: 100%;
+    background-color: #121619;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
+    bottom: 0;
+}
+
+.footer .socialMedia {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.footer .socialMedia svg {
+    font-size: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+    color: white;
+}
+
+.footer .socialMedia svg:hover {
+    transform: scale(1.2);
+    color: #00bcd4;
+}
+
+.footer p {
+    font-size: 14px;
+    opacity: 0.8;
+    margin: 0;
+}
