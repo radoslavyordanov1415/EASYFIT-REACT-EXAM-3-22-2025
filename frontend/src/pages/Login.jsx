@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import walkGif from "../assets/videos/walk1.gif"
 import AlertBox from "../components/AlertBox";
 
-import { useAuth } from "../components/context/authContext";
+import { useAuth } from "../components/context/AuthenticationContex";
 import "../styles/Login.css";
 
 

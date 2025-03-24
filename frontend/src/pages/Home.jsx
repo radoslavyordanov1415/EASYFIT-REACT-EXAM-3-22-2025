@@ -1,8 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../components/context/authContext";
+
+
+
 import background from "../assets/img/background.webp";
 import "../styles/Home.css";
+import { useAuth } from "../components/context/AuthenticationContex";
+
 
 
 export default function Home() {

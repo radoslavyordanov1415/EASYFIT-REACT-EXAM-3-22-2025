@@ -2,7 +2,7 @@
 
 
 import { Navigate, Outlet } from "react-router-dom"
-import { useAuth } from "../context/authContext"
+import { useAuth } from "../context/AuthenticationContex"
 
 
 export default function PublicRoute() {
