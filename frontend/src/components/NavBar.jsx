@@ -34,6 +34,7 @@ export default function NavBar() {
                 ) : (
                     <>
                         <Link to="/">Home</Link>
+                        <Link to="/about">About</Link>
                         <Link to="/register">Register</Link>
                         <Link to="/login">Login</Link>
                     </>
@@ -54,6 +55,7 @@ export default function NavBar() {
                 ) : (
                     <>
                         <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+                        <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
                         <Link to="/register" onClick={() => setMenuOpen(false)}>Register</Link>
                         <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
                     </>

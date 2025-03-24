@@ -1,20 +1,23 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import NavBar from "./components/NavBar"
-import PublicRoute from "./components/guards/PublicRoutes"
-import ProtectedRoute from "./components/guards/ProtectedRoutes"
+import Footer from "./components/Footer"
+
 import Home from "./pages/Home"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
+import Logout from "./pages/Logout"
 import Profile from "./pages/Profile"
 import Create from "./pages/Create"
-import Catalog from "./pages/Catalog"
 import Edit from "./pages/Edit"
-import Logout from "./pages/Logout"
-import "./App.css"
-import { AuthProvider } from "./components/context/AuthenticationContex"
-import Footer from "./components/Footer"
+import Catalog from "./pages/Catalog"
 import OutfitDetails from "./pages/OutfitDetails"
+import About from "./pages/About"
 
+import ProtectedRoute from "./components/guards/ProtectedRoutes"
+import PublicRoute from "./components/guards/PublicRoutes"
+import { AuthProvider } from "./components/context/AuthenticationContex"
+
+import "./App.css"
 function App() {
   return (
     <div className="App">
@@ -34,6 +37,7 @@ function AppContent() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
 
         {/* Auth routes */}
         <Route element={<PublicRoute />}>
