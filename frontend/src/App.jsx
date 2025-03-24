@@ -12,9 +12,8 @@ import Edit from "./pages/Edit"
 import Logout from "./pages/Logout"
 import "./App.css"
 import { AuthProvider } from "./components/context/AuthenticationContex"
-import MannequinProvider from "./components/Mannequin/hooks/use-mannequin-context"
-import useMannequinState from "./components/Mannequin/hooks/use-mannequin-state"
 import Footer from "./components/Footer"
+import OutfitDetails from "./pages/OutfitDetails"
 
 function App() {
   return (
@@ -28,37 +27,34 @@ function App() {
   )
 }
 
-// This component is rendered after Router context is established
 function AppContent() {
-  // Now this hook is called within Router context
-  const mannequinState = useMannequinState()
-
   return (
-    <MannequinProvider value={mannequinState}>
+    <>
       <NavBar />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
 
-        {/* Auth routes - redirect to home if already logged in */}
+        {/* Auth routes */}
         <Route element={<PublicRoute />}>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Route>
 
-        {/* Protected routes - require authentication */}
+        {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/logout" element={<Logout />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/create" element={<Create />} />
           <Route path="/edit/:outfitId" element={<Edit />} />
           <Route path="/catalog" element={<Catalog />} />
+          <Route path="/outfit/:outfitId" element={<OutfitDetails />} />
+
         </Route>
       </Routes>
       <Footer />
-    </MannequinProvider>
+    </>
   )
 }
 
 export default App
-
