@@ -1,27 +1,23 @@
+"use client"
 
-import { Navigate, Outlet, useLocation } from "react-router-dom"
-import { useAuth } from "../context/authContext"
+import { Navigate, Outlet } from "react-router-dom"
+import { useAuth } from "../context/AuthenticationContex"
 
+export default function ProtectedRoute() {
+    const { isLoggedIn, loading } = useAuth()
 
-const ProtectedRoute = () => {
-    const { isLoggedIn } = useAuth()
-    const location = useLocation()
-
-    if (isLoggedIn === null) {
-        return (
-            <div className="loading-container">
-                <div className="loading-spinner"></div>
-                <p>Loading...</p>
-            </div>
-        )
+    // Show loading state while checking authentication
+    if (loading) {
+        return <div className="loading">Loading...</div>
     }
 
+    // If not logged in, redirect to login page
     if (!isLoggedIn) {
-        return <Navigate to="/login" state={{ from: location.pathname }} replace />
+        console.log("Protected route: Not logged in, redirecting to login")
+        return <Navigate to="/login" />
     }
 
+    // If logged in, render the child routes
     return <Outlet />
 }
-
-export default ProtectedRoute
 
