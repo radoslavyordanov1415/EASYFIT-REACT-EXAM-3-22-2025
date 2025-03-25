@@ -116,25 +116,28 @@
 
 .outfit-actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+    justify-content: space-between;
     padding: 15px;
     border-top: 1px solid #f0f0f0;
 }
 
 .edit-btn,
 .delete-button {
-    padding: 8px 16px;
+    padding: 12px 24px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s ease;
+    font-size: 16px;
+    flex: 1;
+    margin: 0 5px;
 }
 
 .edit-btn {
     background-color: #ffc107;
     color: #000;
+    order: 2;
 }
 
 .edit-btn:hover {
@@ -144,6 +147,7 @@
 .delete-button {
     background-color: #dc3545;
     color: white;
+    order: 1;
 }
 
 .delete-button:hover {
