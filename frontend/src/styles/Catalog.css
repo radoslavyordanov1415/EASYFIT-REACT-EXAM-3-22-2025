@@ -116,38 +116,38 @@
 
 .outfit-actions {
     display: flex;
+    justify-content: flex-end;
+    gap: 10px;
     padding: 15px;
     border-top: 1px solid #f0f0f0;
 }
 
 .edit-btn,
-.delete-btn {
-    flex: 1;
-    padding: 8px 0;
+.delete-button {
+    padding: 8px 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
-    transition: background-color 0.3s;
+    transition: all 0.2s ease;
 }
 
 .edit-btn {
-    background-color: #f0ad4e;
-    color: white;
-    margin-right: 10px;
+    background-color: #ffc107;
+    color: #000;
 }
 
 .edit-btn:hover {
-    background-color: #ec971f;
+    background-color: #e0a800;
 }
 
-.delete-btn {
-    background-color: #d9534f;
+.delete-button {
+    background-color: #dc3545;
     color: white;
 }
 
-.delete-btn:hover {
-    background-color: #c9302c;
+.delete-button:hover {
+    background-color: #c82333;
 }
 
 .loading-container {
@@ -200,4 +200,60 @@
     .outfits-grid {
         grid-template-columns: 1fr;
     }
+}
+
+
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmation-dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 300px;
+}
+
+.confirmation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.confirmation-buttons button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
 }

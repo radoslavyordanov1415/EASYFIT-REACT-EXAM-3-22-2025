@@ -7,6 +7,7 @@ import "../styles/Catalog.css"
 export default function Catalog() {
     const [outfits, setOutfits] = useState([])
     const [loading, setLoading] = useState(true)
+    const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, outfitId: null });
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -49,6 +50,32 @@ export default function Catalog() {
     const formatDate = (dateString) => {
         const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }
         return new Date(dateString).toLocaleDateString(undefined, options)
+    };
+
+    const handleDeleteClick = (outfitId) => {
+        setDeleteConfirmation({ show: true, outfitId });
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            const response = await fetch(`http://localhost:5005/api/outfits/delete/${deleteConfirmation.outfitId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                setOutfits((prev) => prev.filter((outfit) => outfit._id !== deleteConfirmation.outfitId));
+                setAlert({ message: "Outfit deleted successfully", type: "success" });
+            }
+        } catch (err) {
+            setAlert({ message: "Failed to delete outfit", type: "error" });
+        } finally {
+            setDeleteConfirmation({ show: false, outfitId: null });
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setDeleteConfirmation({ show: false, outfitId: null });
     };
 
     return (
@@ -125,15 +152,31 @@ export default function Catalog() {
                                 </div>
                             </div>
                             <div className="outfit-actions">
+                                <button
+                                    onClick={() => handleDeleteClick(outfit._id)}
+                                    className="delete-button"
+                                >
+                                    Delete
+                                </button>
                                 <button onClick={() => handleEdit(outfit._id)} className="edit-btn">
                                     Edit
-                                </button>
-                                <button onClick={() => handleDelete(outfit._id)} className="delete-btn">
-                                    Delete
                                 </button>
                             </div>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {deleteConfirmation.show && (
+                <div className="confirmation-overlay">
+                    <div className="confirmation-dialog">
+                        <h3>Confirm Delete</h3>
+                        <p>Are you sure you want to delete this outfit?</p>
+                        <div className="confirmation-buttons">
+                            <button onClick={handleConfirmDelete} className="delete-btn">Delete</button>
+                            <button onClick={handleCancelDelete} className="cancel-btn">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
