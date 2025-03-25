@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
+import AlertBox from "../components/AlertBox";
 
 import "../styles/OutfitDetails.css"
 
@@ -7,6 +8,8 @@ export default function OutfitDetails() {
     const { outfitId } = useParams()
     const [outfit, setOutfit] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [alert, setAlert] = useState({ message: "", type: "" });
+    const [deleteConfirmation, setDeleteConfirmation] = useState(false);
     const navigate = useNavigate()
 
 
@@ -41,18 +44,29 @@ export default function OutfitDetails() {
         navigate(`/edit/${outfitId}`)
     };
 
-    const handleDelete = async () => {
+    const handleDeleteClick = () => {
+        setDeleteConfirmation(true);
+    };
+
+    const handleConfirmDelete = async () => {
         try {
             const response = await fetch(`http://localhost:5005/api/outfits/delete/${outfitId}`, {
                 method: "DELETE",
                 credentials: "include",
             });
             if (response.ok) {
-                navigate("/catalog")
-            };
+                setAlert({ message: "Outfit deleted successfully", type: "success" });
+                setDeleteConfirmation(false);
+                setTimeout(() => navigate("/catalog"), 1500);
+            }
         } catch (err) {
-            console.error("Error deleting outfit:", err)
+            setAlert({ message: "Failed to delete outfit", type: "error" });
+            setDeleteConfirmation(false);
         }
+    };
+
+    const handleCancelDelete = () => {
+        setDeleteConfirmation(false);
     };
 
     const formatDate = (dateString) => {
@@ -88,6 +102,7 @@ export default function OutfitDetails() {
                     <p>Last Updated: {formatDate(outfit.updatedAt)}</p>
                 </div>
             </div>
+            {alert.message && <AlertBox message={alert.message} type={alert.type} />}
 
             <div className="outfit-details-content">
                 <div
@@ -158,13 +173,25 @@ export default function OutfitDetails() {
                 <button onClick={handleEdit} className="edit-btn">
                     Edit Outfit
                 </button>
-                <button onClick={handleDelete} className="delete-btn">
+                <button onClick={handleDeleteClick} className="delete-btn">
                     Delete Outfit
                 </button>
                 <Link to="/catalog" className="back-btn">
                     Back to Catalog
                 </Link>
             </div>
+            {deleteConfirmation && (
+                <div className="confirmation-overlay">
+                    <div className="confirmation-dialog">
+                        <h3>Confirm Delete</h3>
+                        <p>Are you sure you want to delete this outfit?</p>
+                        <div className="confirmation-buttons">
+                            <button onClick={handleConfirmDelete} className="delete-btn">Delete</button>
+                            <button onClick={handleCancelDelete} className="cancel-btn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 

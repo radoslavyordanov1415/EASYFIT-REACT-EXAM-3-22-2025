@@ -225,3 +225,58 @@
         aspect-ratio: 2/3;
     }
 }
+
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmation-dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 300px;
+}
+
+.confirmation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.confirmation-buttons button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.confirmation-buttons .delete-btn {
+    background-color: #d9534f;
+    color: white;
+}
+
+.confirmation-buttons .delete-btn:hover {
+    background-color: #c9302c;
+}
+
+.confirmation-buttons .cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.confirmation-buttons .cancel-btn:hover {
+    background-color: #5a6268;
+}
