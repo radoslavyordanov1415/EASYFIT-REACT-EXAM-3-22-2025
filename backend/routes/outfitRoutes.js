@@ -111,9 +111,46 @@ router.get('/all', verifyToken, async (req, res) => {
     }
 });
 //* Recent route
+router.get('/recent', verifyToken, async (req, res) => {
+    try {
+        const userId = new mongoose.Types.ObjectId(req.userId);
 
+        const outfits = await Outfit.find({ userId }).sort({ createdAt: -1 }).limit(3);
+        res.json({ outfits });
+    } catch (error) {
+        console.error('Error fetching recent outfits:', error);
+        res.status(500).json({ message: 'Error fetching recent outfits', error: error.message });
+    }
+});
 //* Stats route
+router.get('/stats', verifyToken, async (req, res) => {
+    try {
+        const userId = new mongoose.Types.ObjectId(req.userId);
 
+        const totalOutfits = await Outfit.countDocuments({ userId });
+
+        const favoriteSeasons = await Outfit.aggregate([
+            { $match: { userId } },
+            { $group: { _id: "$season", count: { $sum: 1 } } },
+            { $sort: { count: -1 } }
+        ]);
+
+        const favoriteOccasions = await Outfit.aggregate([
+            { $match: { userId } },
+            { $group: { _id: "$occasion", count: { $sum: 1 } } },
+            { $sort: { count: -1 } }
+        ]);
+
+        res.json({
+            totalOutfits,
+            favoriteSeasons: Object.fromEntries(favoriteSeasons.map(s => [s._id, s.count])),
+            favoriteOccasions: Object.fromEntries(favoriteOccasions.map(o => [o._id, o.count]))
+        });
+    } catch (error) {
+        console.error('Error fetching user stats:', error);
+        res.status(500).json({ message: 'Error fetching user stats', error: error.message });
+    }
+});
 //* ID route
 router.get('/:id', async (req, res) => {
     try {
