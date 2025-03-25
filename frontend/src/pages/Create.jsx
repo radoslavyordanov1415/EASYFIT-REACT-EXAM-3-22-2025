@@ -10,6 +10,12 @@ function Create() {
     const [selectedPart, setSelectedPart] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [loadingOutfit, setLoadingOutfit] = useState(false);
+    const [uploadedParts, setUploadedParts] = useState({
+        head: false,
+        chest: false,
+        legs: false,
+        feet: false
+    });
 
     const [formState, setFormState] = useState({
         name: "",
@@ -37,6 +43,7 @@ function Create() {
                     }
 
                     const outfit = await response.json();
+
                     setFormState({
                         name: outfit.name || "",
                         season: outfit.season || "",
@@ -46,6 +53,15 @@ function Create() {
                         fitType: outfit.fitType || "",
                         description: outfit.description || "",
                     });
+
+                    if (outfit.appliedClothing) {
+                        setUploadedParts({
+                            head: !!outfit.appliedClothing.head,
+                            chest: !!outfit.appliedClothing.chest,
+                            legs: !!outfit.appliedClothing.legs,
+                            feet: !!outfit.appliedClothing.feet
+                        });
+                    }
                 } catch (error) {
                     console.error("Error fetching outfit:", error);
                 } finally {
@@ -76,8 +92,32 @@ function Create() {
                 fitType: outfit.fitType || "",
                 description: outfit.description || "",
             });
+
+            if (outfit.appliedClothing) {
+                setUploadedParts({
+                    head: !!outfit.appliedClothing.head,
+                    chest: !!outfit.appliedClothing.chest,
+                    legs: !!outfit.appliedClothing.legs,
+                    feet: !!outfit.appliedClothing.feet
+                });
+            }
         }
     }, []);
+
+    const handlePhotoUploaded = (part) => {
+        setUploadedParts(prev => ({
+            ...prev,
+            [part]: true
+        }));
+    };
+
+    const handlePhotoRemoved = (part) => {
+        setUploadedParts(prev => ({
+            ...prev,
+            [part]: false
+        }));
+        setSelectedPart(null);
+    };
 
     return (
         <div className="create-container">
@@ -167,10 +207,16 @@ function Create() {
                     )}
 
                     <div className="part-selection">
-                        <button className="styled-button" onClick={() => handleButtonClick("head")}>Head</button>
-                        <button className="styled-button" onClick={() => handleButtonClick("chest")}>Chest</button>
-                        <button className="styled-button" onClick={() => handleButtonClick("legs")}>Legs</button>
-                        <button className="styled-button" onClick={() => handleButtonClick("feet")}>Feet</button>
+                        {['head', 'chest', 'legs', 'feet'].map((part) => (
+                            <button
+                                key={part}
+                                className={`styled-button ${uploadedParts[part] ? 'uploaded' : ''}`}
+                                onClick={() => !uploadedParts[part] && handleButtonClick(part)}
+                                disabled={uploadedParts[part]}
+                            >
+                                {part.charAt(0).toUpperCase() + part.slice(1)} {uploadedParts[part] ? '✓' : ''}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
@@ -179,6 +225,8 @@ function Create() {
                         selectedPart={selectedPart}
                         formState={formState}
                         onOutfitLoaded={handleOutfitLoaded}
+                        onPhotoUploaded={handlePhotoUploaded}
+                        onPhotoRemoved={handlePhotoRemoved}
                     />
                 </div>
             </div>

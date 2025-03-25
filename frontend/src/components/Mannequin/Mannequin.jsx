@@ -2,7 +2,7 @@
 import useMannequin from "./hooks/UseMannequin"
 import { EDITOR_WIDTH, EDITOR_HEIGHT } from "./constants/MannequinConstants"
 
-export default function Mannequin({ selectedPart, formState, onOutfitLoaded }) {
+export default function Mannequin({ selectedPart, formState, onOutfitLoaded, onPhotoUploaded, onPhotoRemoved }) {
     const {
         isEditing,
         saveStatus,
@@ -17,6 +17,16 @@ export default function Mannequin({ selectedPart, formState, onOutfitLoaded }) {
         handleMouseDown,
         handleResizeMouseDown,
     } = useMannequin(selectedPart, formState, onOutfitLoaded)
+
+    const handleFileChangeWithCallback = (e) => {
+        handleFileChange(e)
+        onPhotoUploaded(selectedPart)
+    }
+
+    const handleDeleteClothingWithCallback = (part) => {
+        handleDeleteClothing(part)
+        onPhotoRemoved(part)
+    }
 
     return (
         <div
@@ -99,7 +109,7 @@ export default function Mannequin({ selectedPart, formState, onOutfitLoaded }) {
                         }}
                     ></div>
                     <button
-                        onClick={() => handleDeleteClothing(part)}
+                        onClick={() => handleDeleteClothingWithCallback(part)}
                         style={{
                             position: "absolute",
                             top: "-15px",
@@ -129,7 +139,7 @@ export default function Mannequin({ selectedPart, formState, onOutfitLoaded }) {
                 </div>
             ))}
 
-            <input type="file" ref={fileInputRef} style={{ display: "none" }} accept="image/*" onChange={handleFileChange} />
+            <input type="file" ref={fileInputRef} style={{ display: "none" }} accept="image/*" onChange={handleFileChangeWithCallback} />
 
             <div
                 style={{
