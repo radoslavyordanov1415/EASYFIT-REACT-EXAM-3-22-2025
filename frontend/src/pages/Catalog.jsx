@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import AlertBox from "../components/AlertBox"
+import LoadingSpinner from "../components/LoadingSpinner" // Add this import
 import "../styles/Catalog.css"
-
-
 
 export default function Catalog() {
     const [outfits, setOutfits] = useState([])
+    const [filteredOutfits, setFilteredOutfits] = useState([])
     const [loading, setLoading] = useState(true)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [filterBy, setFilterBy] = useState({
+        season: "",
+        fitType: ""
+    })
     const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, outfitId: null });
     const navigate = useNavigate()
 
@@ -78,6 +84,35 @@ export default function Catalog() {
         setDeleteConfirmation({ show: false, outfitId: null });
     };
 
+    useEffect(() => {
+        let result = [...outfits]
+
+        // Apply search across multiple fields
+        if (searchTerm) {
+            const searchLower = searchTerm.toLowerCase();
+            result = result.filter(outfit =>
+                outfit.name?.toLowerCase().includes(searchLower) ||
+                outfit.description?.toLowerCase().includes(searchLower) ||
+                outfit.season?.toLowerCase().includes(searchLower) ||
+                outfit.fitType?.toLowerCase().includes(searchLower)
+            );
+        }
+
+        // Apply filters
+        if (filterBy.season) {
+            result = result.filter(outfit =>
+                outfit.season?.toLowerCase() === filterBy.season.toLowerCase()
+            );
+        }
+        if (filterBy.fitType) {
+            result = result.filter(outfit =>
+                outfit.fitType?.toLowerCase() === filterBy.fitType.toLowerCase()
+            );
+        }
+
+        setFilteredOutfits(result);
+    }, [outfits, searchTerm, filterBy]);
+
     return (
         <div className="catalog-container">
             <div className="catalog-header">
@@ -87,18 +122,50 @@ export default function Catalog() {
                 </Link>
             </div>
 
-            {loading ? (
-                <div className="loading-container">
-                    <div className="loading-spinner"></div>
-                    <p>Loading outfits...</p>
+            <div className="catalog-controls">
+                <div className="search-box">
+                    <input
+                        type="text"
+                        placeholder="Search outfits..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
-            ) : outfits.length === 0 ? (
+
+                <div className="filter-controls">
+                    <select
+                        value={filterBy.season}
+                        onChange={(e) => setFilterBy(prev => ({ ...prev, season: e.target.value }))}
+                    >
+                        <option value="">All Seasons</option>
+                        <option value="Spring">Spring</option>
+                        <option value="Summer">Summer</option>
+                        <option value="Fall">Fall</option>
+                        <option value="Winter">Winter</option>
+                    </select>
+
+                    <select
+                        value={filterBy.fitType}
+                        onChange={(e) => setFilterBy(prev => ({ ...prev, fitType: e.target.value }))}
+                    >
+                        <option value="">All Fit Types</option>
+                        <option value="Slim">Slim</option>
+                        <option value="Regular">Regular</option>
+                        <option value="Loose">Loose</option>
+                        <option value="Oversized">Oversized</option>
+                    </select>
+                </div>
+            </div>
+
+            {loading ? (
+                <LoadingSpinner message="Loading outfits..." />
+            ) : filteredOutfits.length === 0 ? (
                 <div className="no-outfits">
                     <p>No outfits found. Create your first outfit!</p>
                 </div>
             ) : (
                 <div className="outfits-grid">
-                    {outfits.map((outfit) => (
+                    {filteredOutfits.map((outfit) => (
                         <div key={outfit._id} className="outfit-card">
                             <div className="outfit-header">
                                 <h3>{outfit.name || "Unnamed Outfit"}</h3>
