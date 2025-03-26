@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useAuth } from "./context/AuthenticationContex";
+import AlertBox from "./AlertBox";
 
 import ReorderIcon from "@mui/icons-material/Reorder";
 import logo from "../assets/img/logo.png";
@@ -10,12 +11,16 @@ import "../styles/NavBar.css";
 export default function NavBar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const { isLoggedIn, logout } = useAuth();
+    const [alert, setAlert] = useState({ message: "", type: "" });
 
     const handleLogout = () => {
+        setAlert({ message: "Logging out...", type: "info" });
         logout();
     };
+
     return (
         <div className="navbar">
+            {alert.message && <AlertBox message={alert.message} type={alert.type} />}
             <div className="leftSide">
                 <Link to='/'>
                     <img src={logo} alt="Logo" />
@@ -28,6 +33,10 @@ export default function NavBar() {
                         <Link to="/profile">Profile</Link>
                         <Link to="/create">Create</Link>
                         <Link to="/catalog">Catalog</Link>
+                        <Link to="/community">Community</Link>
+
+
+
 
                         <button onClick={handleLogout}>Logout</button>
                     </>
