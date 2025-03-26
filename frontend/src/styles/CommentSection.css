@@ -1,0 +1,91 @@
+/* In CommentSection.css */
+.comment-section {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 12px;
+}
+
+.comment-section h3 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.comment-section form {
+    margin-bottom: 2rem;
+}
+
+.comment-section textarea {
+    width: 100%;
+    height: 100px;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    margin-bottom: 1rem;
+}
+
+.comment-section button[type="submit"] {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.comment-section button[type="submit"]:hover {
+    background: #2980b9;
+}
+
+.comments-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.comment {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.comment-author img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-author span {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.comment p {
+    color: #34495e;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.comment small {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.owner-comment-notice {
+    padding: 1rem;
+    background: #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    color: #666;
+}

@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react"
-import { useParams, useNavigate, Link } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import AlertBox from "../components/AlertBox";
-
-import "../styles/OutfitDetails.css"
+import CommentSection from "../components/Mannequin/Community/CommentSection";
+import "../styles/OutfitDetails.css";
+import { useAuth } from "../components/context/AuthenticationContex";
 
 export default function OutfitDetails() {
-    const { outfitId } = useParams()
-    const [outfit, setOutfit] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const { outfitId } = useParams();
+    const [outfit, setOutfit] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [alert, setAlert] = useState({ message: "", type: "" });
     const [deleteConfirmation, setDeleteConfirmation] = useState(false);
-    const navigate = useNavigate()
-
+    const navigate = useNavigate();
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchOutfitDetails = async () => {
@@ -22,26 +23,24 @@ export default function OutfitDetails() {
 
                 if (!response.ok) {
                     throw new Error("Error fetching outfit details");
-                };
+                }
 
                 const data = await response.json();
                 setOutfit(data);
             } catch (err) {
-                console.error("Error fetching outfit details:", err)
-
+                console.error("Error fetching outfit details:", err);
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         if (outfitId) {
             fetchOutfitDetails();
         }
-
     }, [outfitId]);
 
     const handleEdit = () => {
-        navigate(`/edit/${outfitId}`)
+        navigate(`/edit/${outfitId}`);
     };
 
     const handleDeleteClick = () => {
@@ -70,8 +69,18 @@ export default function OutfitDetails() {
     };
 
     const formatDate = (dateString) => {
-        const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }
-        return new Date(dateString).toLocaleDateString(undefined, options)
+        const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    const handleCommentAdded = (newComment) => {
+        setOutfit(prevOutfit => {
+            if (!prevOutfit) return null;
+            return {
+                ...prevOutfit,
+                comments: [...prevOutfit.comments, newComment]
+            };
+        });
     };
 
     if (loading) {
@@ -80,8 +89,8 @@ export default function OutfitDetails() {
                 <div className="loading-spinner"></div>
                 <p>Loading outfit details...</p>
             </div>
-        )
-    };
+        );
+    }
 
     if (!outfit) {
         return (
@@ -91,8 +100,11 @@ export default function OutfitDetails() {
                     Back to Catalog
                 </Link>
             </div>
-        )
-    };
+        );
+    }
+
+    const isOwner = user && outfit && outfit.userId === user.userId;
+
     return (
         <div className="outfit-details-container">
             <div className="outfit-details-header">
@@ -102,6 +114,7 @@ export default function OutfitDetails() {
                     <p>Last Updated: {formatDate(outfit.updatedAt)}</p>
                 </div>
             </div>
+
             {alert.message && <AlertBox message={alert.message} type={alert.type} />}
 
             <div className="outfit-details-content">
@@ -109,7 +122,7 @@ export default function OutfitDetails() {
                     className="outfit-details-preview"
                     style={{
                         position: "relative",
-                        width: "517px",
+                        width: "520px",
                         height: "600px",
                         maxWidth: "100%",
                         margin: "0 auto",
@@ -133,7 +146,7 @@ export default function OutfitDetails() {
                                     zIndex: 10,
                                 }}
                             />
-                        )
+                        );
                     })}
                 </div>
 
@@ -170,15 +183,26 @@ export default function OutfitDetails() {
             </div>
 
             <div className="outfit-details-actions">
-                <button onClick={handleEdit} className="edit-btn">
-                    Edit Outfit
-                </button>
-                <button onClick={handleDeleteClick} className="delete-btn">
-                    Delete Outfit
-                </button>
+                {isOwner && (
+                    <>
+                        <button onClick={handleEdit} className="edit-btn">
+                            Edit Outfit
+                        </button>
+                        <button onClick={handleDeleteClick} className="delete-btn">
+                            Delete Outfit
+                        </button>
+                    </>
+                )}
                 <Link to="/catalog" className="back-btn">
                     Back to Catalog
                 </Link>
+            </div>
+            <div className="comments-section">
+                <CommentSection
+                    outfitId={outfitId}
+                    comments={outfit.comments || []}
+                    onCommentAdded={handleCommentAdded}
+                />
             </div>
             {deleteConfirmation && (
                 <div className="confirmation-overlay">
@@ -193,6 +217,5 @@ export default function OutfitDetails() {
                 </div>
             )}
         </div>
-    )
-
+    );
 }
