@@ -66,7 +66,7 @@ EasyFit is an intuitive web application designed to streamline your morning rout
 ## Project Structure
 
 ### Frontend Architecture
-```
+```bash
 frontend/
 ├── src/
 │   ├── assets/          # Static resources
@@ -85,7 +85,7 @@ frontend/
 ```
 
 ### Backend Architecture
-```
+```bash
 backend/
 ├── models/           # Data schemas
 ├── routes/          # API endpoints
@@ -96,12 +96,12 @@ backend/
 
 ## Getting Started
 
-1. Clone the repository:
+### 1. Clone the repository:
 ```bash
 git clone [repository-url]
 ```
 
-2. Install dependencies:
+### 2. Install dependencies:
 ```bash
 # Frontend setup
 cd frontend
@@ -112,16 +112,16 @@ cd backend
 npm install
 ```
 
-3. Environment Configuration:
-Create `.env` in backend directory:
-```
+### 3. Environment Configuration:
+Create a `.env` file in the backend directory:
+```plaintext
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_secret_key
 PORT=5005
 REMOVE_BG_API_KEY=your_api_key
 ```
 
-4. Launch development servers:
+### 4. Launch development servers:
 ```bash
 # Start backend
 cd backend
@@ -147,25 +147,33 @@ npm run dev
 - `PUT /api/outfits/edit/:id` - Update outfit
 - `DELETE /api/outfits/delete/:id` - Remove outfit
 
+### Community Endpoints
+- `GET /api/outfits/community/all` - Retrieve all outfits for the community section.
+- `POST /api/outfits/:outfitId/like` - Add a "like" reaction to an outfit.
+- `POST /api/outfits/:outfitId/dislike` - Add a "dislike" reaction to an outfit.
+- `POST /api/outfits/:outfitId/comment` - Add a comment to an outfit.
+- `DELETE /api/outfits/delete/:outfitId` - Delete a specific outfit.
+
 ## Enhanced Features
-- Automatic background removal for clothing items
-- Responsive design across devices
-- Real-time outfit preview
-- Comprehensive outfit statistics
-- Advanced image processing
-- Intuitive user interface
-- Detailed about page with feature explanations
+- **Community Outfit Display:** Users can explore a gallery of outfits created by other users. Each outfit displays a preview image, the creator's username, and the number of likes, dislikes, and comments.
+- **Outfit Reactions:** Users can express their opinions by liking or disliking outfits.
+- **Outfit Comments:** Users can engage in discussions by adding comments to outfits.
+- **Outfit Owner Identification:** The owner of each outfit is clearly displayed with their avatar and username.
+- **Outfit Deletion & Editing:** Outfit owners can delete or edit their own outfits.
+- **View Outfit in Detail:** Users can click on an outfit preview to view more details.
+- **User Avatar:** All users have an avatar that is displayed in the community. If they don't upload one, a default avatar is displayed.
 
 ## Future Roadmap
-- Social sharing capabilities
-- Advanced categorization system
-- Community features
-- Enhanced mobile experience
-- Comprehensive testing
-- Redux state management
-- AI-powered outfit recommendations
-- Weather integration
-- Calendar scheduling
+- **Social sharing capabilities**
+    - Users can share outfits and react to them.
+- **Advanced categorization system**
+- **Community features expansion**
+- **Enhanced mobile experience**
+- **Comprehensive testing**
+- **Redux state management**
+- **AI-powered outfit recommendations**
+- **Weather integration**
+- **Calendar scheduling**
 
 ## License
 This project is licensed under the MIT License.
