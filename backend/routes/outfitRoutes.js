@@ -154,9 +154,90 @@ router.get('/stats', verifyToken, async (req, res) => {
 //* ID route
 router.get('/:id', async (req, res) => {
     try {
-        const outfit = await Outfit.findById(req.params.id);
+        const outfit = await Outfit.findById(req.params.id)
+            .populate({
+                path: 'comments.userId',
+                select: 'username avatar'
+            });
         res.json(outfit);
     } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// In community/all route
+router.get('/community/all', async (req, res) => {
+    try {
+        const outfits = await Outfit.find()
+            .populate('userId', 'username avatar')
+            .populate({
+                path: 'comments.userId',
+                select: 'username avatar'
+            })
+            .sort({ createdAt: -1 });
+        res.json(outfits);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Reactions
+const handleReaction = async (req, res, reactionType) => {
+    try {
+        const outfit = await Outfit.findById(req.params.id);
+        const userId = req.userId;
+
+        const oppositeReaction = reactionType === 'likes' ? 'dislikes' : 'likes';
+
+        // Check if user has already reacted
+        if (outfit[reactionType].includes(userId)) {
+            // User is removing their reaction
+            outfit[reactionType].pull(userId);
+        } else {
+            // User is adding a reaction
+            // Remove opposite reaction if it exists
+            outfit[oppositeReaction].pull(userId);
+            outfit[reactionType].push(userId);
+        }
+
+        await outfit.save();
+        res.json(outfit);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+router.post('/:id/like', verifyToken, (req, res) => handleReaction(req, res, 'likes'));
+router.post('/:id/dislike', verifyToken, (req, res) => handleReaction(req, res, 'dislikes'));
+
+// Comments
+router.post('/:id/comment', verifyToken, async (req, res) => {
+    try {
+        const outfit = await Outfit.findById(req.params.id);
+        if (!outfit) return res.status(404).json({ message: 'Outfit not found' });
+
+        // Add new comment
+        const newComment = {
+            userId: req.userId,
+            text: req.body.text
+        };
+        outfit.comments.push(newComment);
+
+        // Save and populate using proper population
+        const savedOutfit = await outfit.save();
+        const populatedOutfit = await Outfit.findById(savedOutfit._id)
+            .populate({
+                path: 'comments.userId',
+                select: 'username avatar'
+            });
+
+        // Get the last comment (newly added one)
+        const responseComment = populatedOutfit.comments.pop();
+
+        res.json(responseComment);
+
+    } catch (err) {
+        console.error('Error posting comment:', err);
         res.status(500).json({ message: err.message });
     }
 });

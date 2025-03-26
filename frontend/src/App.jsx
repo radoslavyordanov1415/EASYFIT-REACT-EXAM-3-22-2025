@@ -18,6 +18,7 @@ import PublicRoute from "./components/guards/PublicRoutes"
 import { AuthProvider } from "./components/context/AuthenticationContex"
 
 import "./App.css"
+import Community from "./components/Mannequin/Community/Community"
 function App() {
   return (
     <div className="App">
@@ -38,6 +39,8 @@ function AppContent() {
         {/* Public routes */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/community" element={<Community />} />
+
 
         {/* Auth routes */}
         <Route element={<PublicRoute />}>
