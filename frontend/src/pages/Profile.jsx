@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../components/context/AuthenticationContex";
 import { Link } from "react-router-dom";
+import AlertBox from "../components/AlertBox";
 
 import "../styles/Profile.css";
 
@@ -52,6 +53,7 @@ export default function Profile() {
         favoriteOccasions: {},
     });
     const [loading, setLoading] = useState(true);
+    const [alert, setAlert] = useState({ message: "", type: "" });
 
 
     useEffect(() => {
@@ -71,6 +73,10 @@ export default function Profile() {
                 setUserStats(prev => ({ ...prev, recentOutfits: recentData.outfits }));
             } catch (err) {
                 console.error("Profile data fetch error:", err);
+                setAlert({
+                    message: "Failed to load profile data",
+                    type: "error"
+                });
             } finally {
                 setLoading(false);
             }
@@ -107,6 +113,7 @@ export default function Profile() {
                     </>
                 )}
             </div>
+            {alert.message && <AlertBox message={alert.message} type={alert.type} />}
 
             <div className="profile-stats">
                 <div className="stats-card">
