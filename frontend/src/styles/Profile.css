@@ -1,33 +1,24 @@
 .profile-container {
-    max-width: 1000px;
+    max-width: 1150px;
     margin: 0 auto;
-    padding: 70px;
-}
-
-.clothing-layer {
-    position: absolute;
-    object-fit: contain;
-    transform-origin: center;
-    z-index: 2;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    transform: scale(0.7);
+    padding: 2rem;
 }
 
 .profile-header {
     display: flex;
     align-items: center;
-    margin-bottom: 50px;
-    padding: 30px;
+    margin-bottom: 2rem;
+    padding: 2rem;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
 
 .profile-avatar {
     width: 100px;
     height: 100px;
-    margin-right: 20px;
+    margin-right: 2rem;
     border-radius: 50%;
     overflow: hidden;
 }
@@ -46,41 +37,44 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 2.5rem;
     font-weight: bold;
 }
 
 .profile-info h2 {
-    margin: 0 0 10px 0;
-    font-size: 24px;
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
 }
 
 .profile-info p {
-    margin: 5px 0;
+    margin: 0;
     color: #666;
+    font-size: 1.1rem;
 }
 
 .profile-stats {
-    margin-bottom: 30px;
+    margin-bottom: 2rem;
 }
 
 .stats-card {
-    padding: 20px;
+    padding: 2rem;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .stats-card h3 {
-    margin: 0 0 15px 0;
-    font-size: 20px;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 10px;
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    color: black;
+    /* Make the title black */
 }
 
 .stats-details {
     display: flex;
-    gap: 30px;
+    gap: 2rem;
 }
 
 .stats-column {
@@ -88,130 +82,111 @@
 }
 
 .stats-column h4 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: black;
+    /* Make the subtitle black */
 }
 
 .stats-column ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
     margin: 0;
 }
 
 .stats-column li {
-    padding: 5px 0;
-}
-
-.profile-recent {
-    margin-bottom: 30px;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    color: black;
+    /* Make the list item text black */
 }
 
 .profile-recent h3 {
-    margin: 0 0 15px 0;
-    font-size: 20px;
+    margin: 0 0 2rem 0;
+    font-size: 1.5rem;
+    color: black;
+    /* Make the title black */
 }
 
-.recent-outfits {
+.outfits-grid {
     display: grid;
-    grid-auto-flow: column;
-    grid-template-columns: auto;
-    grid-gap: 20px;
-    overflow-x: auto;
-    padding-bottom: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
-.recent-outfit-card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
+.outfit-card {
     border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
 }
 
-.recent-outfit-card:hover {
+.outfit-card:hover {
     transform: translateY(-5px);
 }
 
-.recent-outfit-preview {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 2 / 3;
-    background: #f8f8f8;
-    border-radius: 8px;
-    overflow: hidden;
+.outfit-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
 }
 
+.outfit-header h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    color: black;
+    /* Make the title black */
+}
 
-.preview-image {
-    position: absolute;
-    top: 0;
-    left: 0;
+.outfit-header p {
+    margin: 0;
+    color: black;
+    /* Make the paragraph text black */
+    font-size: 0.9rem;
+}
+
+.outfit-preview {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2/3;
+    background: #f8f8f8;
+}
+
+.mannequin-base {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    z-index: 1;
+    object-fit: contain;
 }
 
 .clothing-layer {
     position: absolute;
     object-fit: contain;
-    width: 100%;
-    transform-origin: center;
-    transform: scale(0.6);
     z-index: 2;
     pointer-events: none;
-    transition: opacity 0.2s;
 }
 
-.clothing-layer[src] {
-    opacity: 1;
+.outfit-summary {
+    padding: 1.5rem;
 }
 
-.clothing-layer:not([src]) {
-    opacity: 0;
-}
-
-@media (max-width: 768px) {
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .profile-avatar {
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
-
-    .stats-details {
-        flex-direction: column;
-    }
-
-    .recent-outfits {
-        grid-template-columns: 1fr;
-    }
-
-    .profile-actions,
-    .settings-buttons {
-        flex-direction: column;
-    }
-
-    .recent-outfit-preview {
-        aspect-ratio: 3 / 4;
-    }
+.outfit-summary p {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+    color: black;
+    text-decoration: none;
 }
 
 .profile-actions {
     display: flex;
-    gap: 15px;
-    margin-top: 20px;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .view-all-btn,
 .create-btn {
-    padding: 10px 20px;
+    padding: 0.8rem 1.5rem;
     border-radius: 4px;
     text-decoration: none;
     font-weight: 500;
@@ -236,63 +211,40 @@
     background-color: #45a049;
 }
 
-.profile-settings {
-    padding: 20px;
-    background-color: white;
+.no-outfits {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-size: 1.1rem;
+    border: 1px dashed #ddd;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.profile-settings h3 {
-    margin: 0 0 15px 0;
-    font-size: 20px;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 10px;
-}
-
-.settings-buttons {
-    display: flex;
-    gap: 15px;
-}
-
-.settings-btn {
-    padding: 10px 20px;
-    background-color: #6c757d;
-    color: white;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.3s;
-}
-
-.settings-btn:hover {
-    background-color: #5a6268;
-}
-
-.loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
-}
-
-.loading-spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    border-top: 4px solid #3498db;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 1rem;
     }
 
-    100% {
-        transform: rotate(360deg);
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .profile-avatar {
+        margin-right: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    .stats-details {
+        flex-direction: column;
+    }
+
+    .outfits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-actions {
+        flex-direction: column;
     }
 }

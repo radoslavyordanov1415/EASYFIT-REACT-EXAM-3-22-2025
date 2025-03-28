@@ -2,47 +2,36 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../components/context/AuthenticationContex";
 import { Link } from "react-router-dom";
 import AlertBox from "../components/AlertBox";
-
+import LoadingSpinner from "../components/LoadingSpinner";
 import "../styles/Profile.css";
 
 const OutfitPreview = ({ outfit }) => {
-    const containerRef = useRef(null);
-
-    const ORIGINAL_WIDTH = 800;
-    const ORIGINAL_HEIGHT = 600;
-    //TODO: Fix the mannequin container so the uploaded clothes to fit how the user created them 
     return (
-        <div className="recent-outfit-preview" ref={containerRef}>
+        <div className="outfit-preview">
             <img
                 src={outfit.mannequinImage || "/placeholder.svg"}
-                alt="Outfit preview"
-                className="preview-image"
+                alt="Mannequin"
+                className="mannequin-base"
             />
-            {Object.entries(outfit.appliedClothing || {}).map(([key, item]) => {
-                const containerWidth = containerRef.current?.offsetWidth || 0;
-                const containerHeight = containerRef.current?.offsetHeight || 0;
-
-                const widthScale = containerWidth / ORIGINAL_WIDTH;
-                const heightScale = containerHeight / ORIGINAL_HEIGHT;
-
-                return (
-                    <img
-                        key={key}
-                        src={item.imageUrl}
-                        alt={`Clothing item ${key}`}
-                        className="clothing-layer"
-                        style={{
-                            left: `${item.xPercent * widthScale}%`,
-                            top: `${item.yPercent * heightScale}%`,
-                            width: `${item.widthPercent * widthScale}%`,
-                            height: `${item.heightPercent * heightScale}%`,
-                        }}
-                    />
-                );
-            })}
+            {Object.entries(outfit.appliedClothing || {}).map(([key, item]) => (
+                <img
+                    key={key}
+                    src={item.imageUrl}
+                    alt={`Clothing item ${key}`}
+                    className="clothing-layer"
+                    style={{
+                        position: "absolute",
+                        left: item.x ? `${item.x + 2}px` : "50%",
+                        top: item.y ? `${item.y}px` : "50%",
+                        width: item.width ? `${item.width}px` : "100px",
+                        height: item.height ? `${item.height}px` : "100px",
+                        transform: item.x ? "none" : "translate(-50%, -50%)",
+                    }}
+                />
+            ))}
         </div>
     );
-}
+};
 
 export default function Profile() {
     const { isLoggedIn, user } = useAuth();
@@ -54,7 +43,6 @@ export default function Profile() {
     });
     const [loading, setLoading] = useState(true);
     const [alert, setAlert] = useState({ message: "", type: "" });
-
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -84,15 +72,15 @@ export default function Profile() {
         if (isLoggedIn) fetchProfileData();
     }, [isLoggedIn]);
 
-    const formatDate = (dateString) => new Date(dateString).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    const formatDate = (dateString) => new Date(dateString).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+
     if (loading) {
-        return (
-            <div className="loading-container">
-                <div className="loading-spinner"></div>
-                <p>Loading profile...</p>
-            </div>
-        );
-    };
+        return <LoadingSpinner message="Loading profile..." />;
+    }
 
     return (
         <div className="profile-container">
@@ -113,6 +101,7 @@ export default function Profile() {
                     </>
                 )}
             </div>
+
             {alert.message && <AlertBox message={alert.message} type={alert.type} />}
 
             <div className="profile-stats">
@@ -157,20 +146,28 @@ export default function Profile() {
             <div className="profile-recent">
                 <h3>Recent Outfits</h3>
                 {userStats.recentOutfits.length ? (
-                    <div className="recent-outfits">
+                    <div className="outfits-grid">
                         {userStats.recentOutfits.map((outfit) => (
-                            <Link to={`/outfit/${outfit._id}`} key={outfit._id} className="recent-outfit-card">
-                                <OutfitPreview outfit={outfit} />
-                                <div className="recent-outfit-info">
+                            <div key={outfit._id} className="outfit-card">
+                                <div className="outfit-header">
                                     <h4>{outfit.name || "Unnamed Outfit"}</h4>
                                     <p>Created: {formatDate(outfit.createdAt)}</p>
                                 </div>
-                            </Link>
+                                <Link to={`/outfit/${outfit._id}`} className="outfit-content">
+                                    <OutfitPreview outfit={outfit} />
+                                    <div className="outfit-summary">
+                                        <p>Season: {outfit.season || "Not specified"}</p>
+                                        <p>Occasion: {outfit.occasion || "Not specified"}</p>
+                                        <p>Fit Type: {outfit.fitType || "Not specified"}</p>
+                                    </div>
+                                </Link>
+                            </div>
                         ))}
                     </div>
                 ) : (
                     <p className="no-outfits">You haven't created any outfits yet.</p>
                 )}
+
                 <div className="profile-actions">
                     <Link to="/catalog" className="view-all-btn">View All Outfits</Link>
                     <Link to="/create" className="create-btn">Create New Outfit</Link>
