@@ -114,6 +114,27 @@
     object-position: center center;
 }
 
+.save-button-container {
+    text-align: center;
+    margin-top: 30px;
+    grid-column: 1 / -1;
+}
+
+.save-button {
+    background: #2c3e50 !important;
+    color: white !important;
+    padding: 16px 50px !important;
+    font-size: 1.1rem !important;
+    transition: all 0.3s ease;
+}
+
+.save-button:hover {
+    background: #34495e !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+
 @media (max-width: 1024px) {
     .create-content {
         grid-template-columns: 1fr;

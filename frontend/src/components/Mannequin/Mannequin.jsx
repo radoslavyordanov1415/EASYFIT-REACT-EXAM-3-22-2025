@@ -2,7 +2,14 @@
 import useMannequin from "./hooks/UseMannequin"
 import { EDITOR_WIDTH, EDITOR_HEIGHT } from "./constants/MannequinConstants"
 
-export default function Mannequin({ selectedPart, formState, onOutfitLoaded, onPhotoUploaded, onPhotoRemoved }) {
+export default function Mannequin({
+    selectedPart,
+    formState,
+    onOutfitLoaded,
+    onPhotoUploaded,
+    onPhotoRemoved,
+    validateForm,
+}) {
     const {
         isEditing,
         saveStatus,
@@ -10,7 +17,7 @@ export default function Mannequin({ selectedPart, formState, onOutfitLoaded, onP
         appliedClothing,
         fileInputRef,
         containerRef,
-        handleSave,
+        handleSave: originalHandleSave,
         toggleMannequinGender,
         handleFileChange,
         handleDeleteClothing,
@@ -26,6 +33,15 @@ export default function Mannequin({ selectedPart, formState, onOutfitLoaded, onP
     const handleDeleteClothingWithCallback = (part) => {
         handleDeleteClothing(part)
         onPhotoRemoved(part)
+    }
+
+    // Wrap the original save function with validation
+    const handleSave = () => {
+        // If validateForm is provided and returns true, proceed with save
+        // Otherwise, if validateForm is not provided, just call the original save function
+        if (!validateForm || validateForm()) {
+            originalHandleSave()
+        }
     }
 
     return (
@@ -139,7 +155,13 @@ export default function Mannequin({ selectedPart, formState, onOutfitLoaded, onP
                 </div>
             ))}
 
-            <input type="file" ref={fileInputRef} style={{ display: "none" }} accept="image/*" onChange={handleFileChangeWithCallback} />
+            <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                accept="image/*"
+                onChange={handleFileChangeWithCallback}
+            />
 
             <div
                 style={{

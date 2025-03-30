@@ -1,21 +1,26 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import Mannequin from "../components/Mannequin/Mannequin";
-import "../styles/Create.css";
+import { useState, useEffect, useCallback } from "react"
+import { useParams } from "react-router-dom"
+import Mannequin from "../components/Mannequin/Mannequin"
+import AlertBox from "../components/AlertBox"
+import "../styles/Create.css"
 
 function Create() {
-    const { outfitId } = useParams();
-    const [selectedPart, setSelectedPart] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [loadingOutfit, setLoadingOutfit] = useState(false);
+    const { outfitId } = useParams()
+    const [selectedPart, setSelectedPart] = useState(null)
+    const [isEditing, setIsEditing] = useState(false)
+    const [loadingOutfit, setLoadingOutfit] = useState(false)
     const [uploadedParts, setUploadedParts] = useState({
         head: false,
         chest: false,
         legs: false,
-        feet: false
-    });
+        feet: false,
+    })
+    const [mannequinImage, setMannequinImage] = useState(null)
+    const [appliedClothing, setAppliedClothing] = useState({})
+    const [alertMessage, setAlertMessage] = useState("")
+    const [alertType, setAlertType] = useState("error")
 
     const [formState, setFormState] = useState({
         name: "",
@@ -25,24 +30,24 @@ function Create() {
         budget: "",
         fitType: "",
         description: "",
-    });
+    })
 
     useEffect(() => {
         if (outfitId) {
-            setIsEditing(true);
-            setLoadingOutfit(true);
+            setIsEditing(true)
+            setLoadingOutfit(true)
 
             const fetchOutfit = async () => {
                 try {
                     const response = await fetch(`http://localhost:5005/api/outfits/${outfitId}`, {
                         credentials: "include",
-                    });
+                    })
 
                     if (!response.ok) {
-                        throw new Error("Failed to fetch outfit");
+                        throw new Error("Failed to fetch outfit")
                     }
 
-                    const outfit = await response.json();
+                    const outfit = await response.json()
 
                     setFormState({
                         name: outfit.name || "",
@@ -52,36 +57,43 @@ function Create() {
                         budget: outfit.budget || "",
                         fitType: outfit.fitType || "",
                         description: outfit.description || "",
-                    });
+                    })
 
                     if (outfit.appliedClothing) {
+                        setAppliedClothing(outfit.appliedClothing)
                         setUploadedParts({
                             head: !!outfit.appliedClothing.head,
                             chest: !!outfit.appliedClothing.chest,
                             legs: !!outfit.appliedClothing.legs,
-                            feet: !!outfit.appliedClothing.feet
-                        });
+                            feet: !!outfit.appliedClothing.feet,
+                        })
+                    }
+
+                    if (outfit.mannequinImage) {
+                        setMannequinImage(outfit.mannequinImage)
                     }
                 } catch (error) {
-                    console.error("Error fetching outfit:", error);
+                    console.error("Error fetching outfit:", error)
+                    setAlertMessage("Failed to load outfit")
+                    setAlertType("error")
                 } finally {
-                    setLoadingOutfit(false);
+                    setLoadingOutfit(false)
                 }
-            };
+            }
 
-            fetchOutfit();
+            fetchOutfit()
         }
-    }, [outfitId]);
+    }, [outfitId])
 
     const handleButtonClick = (part) => {
-        setSelectedPart(part);
-    };
+        setSelectedPart(part)
+    }
 
     const handleFormChange = (field, value) => {
-        setFormState((prev) => ({ ...prev, [field]: value }));
-    };
+        setFormState((prev) => ({ ...prev, [field]: value }))
+    }
 
-    const handleOutfitLoaded = useCallback((outfit) => {
+    function handleOutfitLoaded(outfit) {
         if (outfit) {
             setFormState({
                 name: outfit.name || "",
@@ -91,37 +103,80 @@ function Create() {
                 budget: outfit.budget || "",
                 fitType: outfit.fitType || "",
                 description: outfit.description || "",
-            });
+            })
 
             if (outfit.appliedClothing) {
+                setAppliedClothing(outfit.appliedClothing)
                 setUploadedParts({
                     head: !!outfit.appliedClothing.head,
                     chest: !!outfit.appliedClothing.chest,
                     legs: !!outfit.appliedClothing.legs,
-                    feet: !!outfit.appliedClothing.feet
-                });
+                    feet: !!outfit.appliedClothing.feet,
+                })
+            }
+
+            if (outfit.mannequinImage) {
+                setMannequinImage(outfit.mannequinImage)
             }
         }
-    }, []);
+    }
 
-    const handlePhotoUploaded = (part) => {
-        setUploadedParts(prev => ({
+    const handlePhotoUploaded = (part, photoData) => {
+        setUploadedParts((prev) => ({
             ...prev,
-            [part]: true
-        }));
-    };
+            [part]: true,
+        }))
+
+        // Update applied clothing with the new photo data
+        setAppliedClothing((prev) => ({
+            ...prev,
+            [part]: photoData,
+        }))
+    }
 
     const handlePhotoRemoved = (part) => {
-        setUploadedParts(prev => ({
+        setUploadedParts((prev) => ({
             ...prev,
-            [part]: false
-        }));
-        setSelectedPart(null);
-    };
+            [part]: false,
+        }))
+
+        // Remove the part from applied clothing
+        setAppliedClothing((prev) => {
+            const updated = { ...prev }
+            delete updated[part]
+            return updated
+        })
+
+        setSelectedPart(null)
+    }
+
+    const validateForm = useCallback(() => {
+        if (!formState.name.trim()) {
+            setAlertMessage("Outfit name is required")
+            setAlertType("error")
+            return false
+        }
+
+        if (!Object.values(uploadedParts).some((part) => part)) {
+            setAlertMessage("Please upload at least one clothing item")
+            setAlertType("error")
+            return false
+        }
+
+        return true
+    }, [formState.name, uploadedParts])
+
+    const clearAlert = () => {
+        setAlertMessage("")
+    }
 
     return (
         <div className="create-container">
             <h2 className="create-title">{isEditing ? "Edit Your Design" : "Create Your Design"}</h2>
+
+            {/* Alert Box for displaying validation messages */}
+            {alertMessage && <AlertBox message={alertMessage} type={alertType} onClose={clearAlert} />}
+
             <div className="create-content">
                 <div className="clothing-selection-form">
                     {loadingOutfit ? (
@@ -189,7 +244,6 @@ function Create() {
                                 <option value="loose">Loose</option>
                             </select>
 
-
                             <textarea
                                 placeholder="Outfit Description"
                                 value={formState.description}
@@ -200,21 +254,21 @@ function Create() {
                                     resize: "vertical",
                                     minHeight: "100px",
                                     padding: "10px",
-                                    margin: "10px 0"
+                                    margin: "10px 0",
                                 }}
                             />
                         </>
                     )}
 
                     <div className="part-selection">
-                        {['head', 'chest', 'legs', 'feet'].map((part) => (
+                        {["head", "chest", "legs", "feet"].map((part) => (
                             <button
                                 key={part}
-                                className={`styled-button ${uploadedParts[part] ? 'uploaded' : ''}`}
+                                className={`styled-button ${uploadedParts[part] ? "uploaded" : ""}`}
                                 onClick={() => !uploadedParts[part] && handleButtonClick(part)}
                                 disabled={uploadedParts[part]}
                             >
-                                {part.charAt(0).toUpperCase() + part.slice(1)} {uploadedParts[part] ? '✓' : ''}
+                                {part.charAt(0).toUpperCase() + part.slice(1)} {uploadedParts[part] ? "✓" : ""}
                             </button>
                         ))}
                     </div>
@@ -227,11 +281,13 @@ function Create() {
                         onOutfitLoaded={handleOutfitLoaded}
                         onPhotoUploaded={handlePhotoUploaded}
                         onPhotoRemoved={handlePhotoRemoved}
+                        validateForm={validateForm}
                     />
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
-export default Create;
+export default Create
+
