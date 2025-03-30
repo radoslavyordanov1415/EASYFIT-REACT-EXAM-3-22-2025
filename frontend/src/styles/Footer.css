@@ -8,21 +8,25 @@
     bottom: 0;
 }
 
-.footer .socialMedia {
+.socialMedia {
     display: flex;
     justify-content: center;
     gap: 20px;
     margin-bottom: 10px;
 }
 
-.footer .socialMedia svg {
+.socialMedia a {
+    color: white;
+}
+
+.socialMedia svg {
     font-size: 30px;
     cursor: pointer;
     transition: transform 0.3s ease, color 0.3s ease;
     color: white;
 }
 
-.footer .socialMedia svg:hover {
+.socialMedia svg:hover {
     transform: scale(1.2);
     color: #00bcd4;
 }
