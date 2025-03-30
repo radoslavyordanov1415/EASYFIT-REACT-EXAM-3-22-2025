@@ -1,8 +1,7 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import "../styles/AlertBox.css";
-
+import { useState, useEffect } from "react"
+import "../styles/AlertBox.css"
 
 const ErrorIcon = () => (
     <svg
@@ -20,7 +19,7 @@ const ErrorIcon = () => (
         <line x1="12" y1="8" x2="12" y2="12"></line>
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
     </svg>
-);
+)
 
 const WarningIcon = () => (
     <svg
@@ -38,7 +37,7 @@ const WarningIcon = () => (
         <line x1="12" y1="9" x2="12" y2="13"></line>
         <line x1="12" y1="17" x2="12.01" y2="17"></line>
     </svg>
-);
+)
 
 const SuccessIcon = () => (
     <svg
@@ -55,7 +54,7 @@ const SuccessIcon = () => (
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
         <polyline points="22 4 12 14.01 9 11.01"></polyline>
     </svg>
-);
+)
 
 const InfoIcon = () => (
     <svg
@@ -73,51 +72,54 @@ const InfoIcon = () => (
         <line x1="12" y1="16" x2="12" y2="12"></line>
         <line x1="12" y1="8" x2="12.01" y2="8"></line>
     </svg>
-);
+)
 
 const AlertBox = ({ message, type = "error", onClose }) => {
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(true)
 
     useEffect(() => {
-        if (!message) return;
+        if (!message) return
 
-        setIsVisible(true);
+        setIsVisible(true)
 
         const timer = setTimeout(() => {
-            setIsVisible(false);
-            if (onClose) onClose();
-        }, 2000);
+            setIsVisible(false)
+            if (onClose) onClose()
+        }, 5000)
 
-        return () => clearTimeout(timer);
-    }, [message, onClose]);
+        return () => clearTimeout(timer)
+    }, [message, onClose])
 
     if (!message || !isVisible) {
-        return null;
+        return null
     }
 
     const getIcon = () => {
         switch (type) {
             case "error":
-                return <ErrorIcon />;
+                return <ErrorIcon />
             case "warning":
-                return <WarningIcon />;
+                return <WarningIcon />
             case "success":
-                return <SuccessIcon />;
+                return <SuccessIcon />
             case "info":
-                return <InfoIcon />;
+                return <InfoIcon />
             default:
-                return <ErrorIcon />;
+                return <ErrorIcon />
         }
-    };
+    }
+
+    const formattedMessage = message.split("\n").map((line, index) => <div key={index}>{line}</div>)
 
     return (
         <div className={`alert-box ${type} ${isVisible ? "visible" : "hidden"}`} role="alert">
             <div className="alert-content">
                 <div className="alert-icon">{getIcon()}</div>
-                <div className="alert-message">{message}</div>
+                <div className="alert-message">{formattedMessage}</div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default AlertBox;
+export default AlertBox
+
