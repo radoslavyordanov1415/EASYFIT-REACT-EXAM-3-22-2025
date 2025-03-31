@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
 .login-container {
     display: flex;
@@ -7,12 +7,16 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
+    background-image: url("../assets/img/loginBackground.jpg");
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
 }
 
 .login-box {
     display: flex;
-    background-color: #f0f0f0;
+    background-color: rgba(240, 240, 240, 0.85);
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     width: 80%;

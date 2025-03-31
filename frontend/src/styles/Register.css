@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
 .register-container {
     display: flex;
@@ -7,7 +7,23 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
+    background-image: url("../assets/img/registerBackground.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.register-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 
 .register-box {
@@ -18,6 +34,8 @@
     width: 80%;
     max-width: 800px;
     overflow: hidden;
+    position: relative;
+    z-index: 2;
 }
 
 .gif-column {
@@ -28,7 +46,8 @@
     overflow: hidden;
 }
 
-.gif-column img {
+.gif-column img,
+.gif-column video {
     width: 100%;
     height: 100%;
     object-fit: cover;
