@@ -22,7 +22,7 @@ export default function NavBar() {
         <div className="navbar">
             {alert.message && <AlertBox message={alert.message} type={alert.type} />}
             <div className="leftSide">
-                <Link to='/'>
+                <Link to="/">
                     <img src={logo} alt="Logo" />
                 </Link>
             </div>
@@ -35,10 +35,10 @@ export default function NavBar() {
                         <Link to="/catalog">Catalog</Link>
                         <Link to="/community">Community</Link>
 
-
-
-
-                        <button onClick={handleLogout}>Logout</button>
+                        {/* Desktop Logout Button */}
+                        <div className="desktopLogout">
+                            <button onClick={handleLogout}>Logout</button>
+                        </div>
                     </>
                 ) : (
                     <>
@@ -59,6 +59,10 @@ export default function NavBar() {
                     <>
                         <Link to="/profile" onClick={() => setMenuOpen(false)}>Profile</Link>
                         <Link to="/create" onClick={() => setMenuOpen(false)}>Create</Link>
+                        <Link to="/community" onClick={() => setMenuOpen(false)}>Community</Link>
+                        <Link to="/catalog" onClick={() => setMenuOpen(false)}>Catalog</Link>
+
+                        {/* Mobile Logout Button */}
                         <button onClick={() => { handleLogout(); setMenuOpen(false); }}>Logout</button>
                     </>
                 ) : (

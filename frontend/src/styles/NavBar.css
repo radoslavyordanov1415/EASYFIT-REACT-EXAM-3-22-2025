@@ -112,8 +112,13 @@ body {
     display: flex;
 }
 
+/* Hide logout button on small screens */
 @media only screen and (max-width: 768px) {
     .rightSide a {
+        display: none;
+    }
+
+    .desktopLogout {
         display: none;
     }
 
