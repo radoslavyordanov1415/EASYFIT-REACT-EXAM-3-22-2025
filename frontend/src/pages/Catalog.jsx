@@ -1,61 +1,56 @@
-import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-
-import LoadingSpinner from "../components/LoadingSpinner"
-import "../styles/Catalog.css"
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
+import "../styles/Catalog.css";
+import { fetchOutfits, deleteOutfit } from "../api/apiHelper.js"; // Import API functions
 
 export default function Catalog() {
-    const [outfits, setOutfits] = useState([])
-    const [filteredOutfits, setFilteredOutfits] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [searchTerm, setSearchTerm] = useState("")
+    const [outfits, setOutfits] = useState([]);
+    const [filteredOutfits, setFilteredOutfits] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
     const [filterBy, setFilterBy] = useState({
         season: "",
         fitType: ""
-    })
+    });
     const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, outfitId: null });
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [alert, setAlert] = useState({ message: '', type: '' });
 
     useEffect(() => {
-        const fetchOutfits = async () => {
+        const loadOutfits = async () => {
             try {
-                const outfitsResponse = await fetch("http://localhost:5005/api/outfits/all", {
-                    credentials: "include",
-                })
-                const outfitsData = await outfitsResponse.json()
-                setOutfits(outfitsData.outfits)
+                const data = await fetchOutfits();
+                setOutfits(data);
             } catch (err) {
-                console.error("Error fetching data:", err)
+                console.error("Error fetching data:", err);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
-        fetchOutfits()
-    }, [])
+        };
+        loadOutfits();
+    }, []);
 
     const handleDelete = async (outfitId) => {
         try {
-            await fetch(`http://localhost:5005/api/outfits/delete/${outfitId}`, {
-                method: "DELETE",
-                credentials: "include",
-            })
-            setOutfits((prev) => prev.filter((o) => o._id !== outfitId))
+            await deleteOutfit(outfitId);
+            setOutfits((prev) => prev.filter((o) => o._id !== outfitId));
         } catch (err) {
-            console.error("Error deleting outfit:", err)
+            console.error("Error deleting outfit:", err);
         }
     };
 
     const handleEdit = (outfitId) => {
-        navigate(`/edit/${outfitId}`)
+        navigate(`/edit/${outfitId}`);
     };
 
     const handleViewDetails = (outfitId) => {
-        navigate(`/outfit/${outfitId}`)
+        navigate(`/outfit/${outfitId}`);
     };
 
     const formatDate = (dateString) => {
-        const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }
-        return new Date(dateString).toLocaleDateString(undefined, options)
+        const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
+        return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
     const handleDeleteClick = (outfitId) => {
@@ -64,15 +59,9 @@ export default function Catalog() {
 
     const handleConfirmDelete = async () => {
         try {
-            const response = await fetch(`http://localhost:5005/api/outfits/delete/${deleteConfirmation.outfitId}`, {
-                method: "DELETE",
-                credentials: "include",
-            });
-
-            if (response.ok) {
-                setOutfits((prev) => prev.filter((outfit) => outfit._id !== deleteConfirmation.outfitId));
-                setAlert({ message: "Outfit deleted successfully", type: "success" });
-            }
+            await deleteOutfit(deleteConfirmation.outfitId);
+            setOutfits((prev) => prev.filter((outfit) => outfit._id !== deleteConfirmation.outfitId));
+            setAlert({ message: "Outfit deleted successfully", type: "success" });
         } catch (err) {
             setAlert({ message: "Failed to delete outfit", type: "error" });
         } finally {
@@ -85,9 +74,8 @@ export default function Catalog() {
     };
 
     useEffect(() => {
-        let result = [...outfits]
+        let result = [...outfits];
 
-        // Apply search across multiple fields
         if (searchTerm) {
             const searchLower = searchTerm.toLowerCase();
             result = result.filter(outfit =>
@@ -98,7 +86,6 @@ export default function Catalog() {
             );
         }
 
-        // Apply filters
         if (filterBy.season) {
             result = result.filter(outfit =>
                 outfit.season?.toLowerCase() === filterBy.season.toLowerCase()
@@ -203,7 +190,7 @@ export default function Catalog() {
                                                     transform: item.x ? "none" : "translate(-50%, -50%)",
                                                 }}
                                             />
-                                        )
+                                        );
                                     })}
                                 </div>
                                 <div className="outfit-summary">
@@ -247,5 +234,5 @@ export default function Catalog() {
                 </div>
             )}
         </div>
-    )
+    );
 }
