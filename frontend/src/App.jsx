@@ -1,3 +1,4 @@
+import NotFound from "./pages/NotFound.jsx"
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import NavBar from "./components/NavBar"
 import Footer from "./components/Footer"
@@ -58,6 +59,7 @@ function AppContent() {
           <Route path="/outfit/:outfitId" element={<OutfitDetails />} />
 
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </>
