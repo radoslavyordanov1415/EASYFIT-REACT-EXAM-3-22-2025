@@ -20,14 +20,20 @@ const upload = multer({ storage: storage });
 
 const uploadToCloudinary = (buffer) => {
     return new Promise((resolve, reject) => {
+        console.log("Starting Cloudinary upload...");
         const stream = cloudinary.v2.uploader.upload_stream(
             { resource_type: "image" },
             (error, result) => {
-                if (error) return reject(error);
+                if (error) {
+                    console.error("Cloudinary upload error:", error);
+                    return reject(error);
+                }
+                console.log("Cloudinary upload successful:", result);
                 resolve(result.secure_url);
             }
         );
         streamifier.createReadStream(buffer).pipe(stream);
+        console.log("Stream created and piped.");
     });
 };
 
