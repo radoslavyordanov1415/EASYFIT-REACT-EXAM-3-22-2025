@@ -1,4 +1,4 @@
-import '../styles/LoadingSpinner.css';
+import "../styles/LoadingSpinner.css"
 
 export default function LoadingSpinner({ message = "Loading..." }) {
     return (
@@ -6,5 +6,6 @@ export default function LoadingSpinner({ message = "Loading..." }) {
             <div className="loading-spinner"></div>
             <p className="loading-message">{message}</p>
         </div>
-    );
+    )
 }
+

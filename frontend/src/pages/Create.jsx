@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { useParams } from "react-router-dom"
 import Mannequin from "../components/Mannequin/Mannequin"
 import AlertBox from "../components/AlertBox"
+import LoadingSpinner from "../components/LoadingSpinner"
 import "../styles/Create.css"
 
 function Create() {
@@ -11,6 +12,7 @@ function Create() {
     const [selectedPart, setSelectedPart] = useState(null)
     const [isEditing, setIsEditing] = useState(false)
     const [loadingOutfit, setLoadingOutfit] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
     const [uploadedParts, setUploadedParts] = useState({
         head: false,
         chest: false,
@@ -121,17 +123,24 @@ function Create() {
         }
     }
 
-    const handlePhotoUploaded = (part, photoData) => {
-        setUploadedParts((prev) => ({
-            ...prev,
-            [part]: true,
-        }))
+    const handleUploadStart = () => {
+        setIsUploading(true)
+    }
 
-        // Update applied clothing with the new photo data
-        setAppliedClothing((prev) => ({
-            ...prev,
-            [part]: photoData,
-        }))
+    const handlePhotoUploaded = (part, photoData) => {
+        setIsUploading(false)
+
+        if (photoData) {
+            setUploadedParts((prev) => ({
+                ...prev,
+                [part]: true,
+            }))
+
+            setAppliedClothing((prev) => ({
+                ...prev,
+                [part]: photoData,
+            }))
+        }
     }
 
     const handlePhotoRemoved = (part) => {
@@ -140,7 +149,6 @@ function Create() {
             [part]: false,
         }))
 
-        // Remove the part from applied clothing
         setAppliedClothing((prev) => {
             const updated = { ...prev }
             delete updated[part]
@@ -174,7 +182,6 @@ function Create() {
         <div className="create-container">
             <h2 className="create-title">{isEditing ? "Edit Your Design" : "Create Your Design"}</h2>
 
-            {/* Alert Box for displaying validation messages */}
             {alertMessage && <AlertBox message={alertMessage} type={alertType} onClose={clearAlert} />}
 
             <div className="create-content">
@@ -266,7 +273,7 @@ function Create() {
                                 key={part}
                                 className={`styled-button ${uploadedParts[part] ? "uploaded" : ""}`}
                                 onClick={() => !uploadedParts[part] && handleButtonClick(part)}
-                                disabled={uploadedParts[part]}
+                                disabled={uploadedParts[part] || isUploading}
                             >
                                 {part.charAt(0).toUpperCase() + part.slice(1)} {uploadedParts[part] ? "✓" : ""}
                             </button>
@@ -275,6 +282,7 @@ function Create() {
                 </div>
 
                 <div className="mannequin-container">
+                    {isUploading && <LoadingSpinner message="Uploading photo..." />}
                     <Mannequin
                         selectedPart={selectedPart}
                         formState={formState}
@@ -282,6 +290,8 @@ function Create() {
                         onPhotoUploaded={handlePhotoUploaded}
                         onPhotoRemoved={handlePhotoRemoved}
                         validateForm={validateForm}
+                        onUploadStart={handleUploadStart}
+                        isUploading={isUploading}
                     />
                 </div>
             </div>

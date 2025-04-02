@@ -9,6 +9,8 @@ export default function Mannequin({
     onPhotoUploaded,
     onPhotoRemoved,
     validateForm,
+    onUploadStart,
+    isUploading,
 }) {
     const {
         isEditing,
@@ -23,11 +25,14 @@ export default function Mannequin({
         handleDeleteClothing,
         handleMouseDown,
         handleResizeMouseDown,
-    } = useMannequin(selectedPart, formState, onOutfitLoaded)
+    } = useMannequin(selectedPart, formState, onOutfitLoaded, onPhotoUploaded)
 
     const handleFileChangeWithCallback = (e) => {
-        handleFileChange(e)
-        onPhotoUploaded(selectedPart)
+        if (e.target.files && e.target.files[0]) {
+            if (onUploadStart) onUploadStart()
+
+            handleFileChange(e)
+        }
     }
 
     const handleDeleteClothingWithCallback = (part) => {
@@ -35,10 +40,7 @@ export default function Mannequin({
         onPhotoRemoved(part)
     }
 
-    // Wrap the original save function with validation
     const handleSave = () => {
-        // If validateForm is provided and returns true, proceed with save
-        // Otherwise, if validateForm is not provided, just call the original save function
         if (!validateForm || validateForm()) {
             originalHandleSave()
         }
@@ -57,6 +59,8 @@ export default function Mannequin({
                 backgroundColor: "#fff",
                 borderRadius: "10px",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                opacity: isUploading ? 0.7 : 1,
+                pointerEvents: isUploading ? "none" : "auto",
             }}
         >
             <button
@@ -77,6 +81,7 @@ export default function Mannequin({
                     transition: "all 0.3s ease",
                 }}
                 className="styled-button"
+                disabled={isUploading}
             >
                 Switch Gender
             </button>
@@ -105,14 +110,14 @@ export default function Mannequin({
                         height: `${item.height}px`,
                         backgroundImage: `url(${item.imageUrl})`,
                         backgroundSize: "contain",
-                        cursor: "move",
+                        cursor: isUploading ? "default" : "move",
                         border: "1px dashed rgba(0,0,0,0.2)",
                         transition: "transform 0.2s ease",
                     }}
-                    onMouseDown={(e) => handleMouseDown(e, part, item.x, item.y)}
+                    onMouseDown={(e) => !isUploading && handleMouseDown(e, part, item.x, item.y)}
                 >
                     <div
-                        onMouseDown={(e) => handleResizeMouseDown(e, part, item.width, item.height)}
+                        onMouseDown={(e) => !isUploading && handleResizeMouseDown(e, part, item.width, item.height)}
                         style={{
                             position: "absolute",
                             bottom: "5px",
@@ -121,11 +126,12 @@ export default function Mannequin({
                             borderRadius: "50%",
                             width: "10px",
                             height: "10px",
-                            cursor: "se-resize",
+                            cursor: isUploading ? "default" : "se-resize",
+                            display: isUploading ? "none" : "block",
                         }}
                     ></div>
                     <button
-                        onClick={() => handleDeleteClothingWithCallback(part)}
+                        onClick={() => !isUploading && handleDeleteClothingWithCallback(part)}
                         style={{
                             position: "absolute",
                             top: "-15px",
@@ -137,18 +143,19 @@ export default function Mannequin({
                             width: "20px",
                             height: "20px",
                             fontSize: "12px",
-                            cursor: "pointer",
-                            display: "flex",
+                            cursor: isUploading ? "default" : "pointer",
+                            display: isUploading ? "none" : "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             transition: "transform 0.2s ease",
                         }}
                         onMouseOver={(e) => {
-                            e.currentTarget.style.transform = "scale(1.1)"
+                            if (!isUploading) e.currentTarget.style.transform = "scale(1.1)"
                         }}
                         onMouseOut={(e) => {
-                            e.currentTarget.style.transform = "scale(1)"
+                            if (!isUploading) e.currentTarget.style.transform = "scale(1)"
                         }}
+                        disabled={isUploading}
                     >
                         ×
                     </button>
@@ -161,6 +168,7 @@ export default function Mannequin({
                 style={{ display: "none" }}
                 accept="image/*"
                 onChange={handleFileChangeWithCallback}
+                disabled={isUploading}
             />
 
             <div
@@ -182,18 +190,24 @@ export default function Mannequin({
                         borderRadius: "10px",
                         fontSize: "16px",
                         fontWeight: "600",
-                        cursor: "pointer",
+                        cursor: isUploading ? "default" : "pointer",
                         transition: "background-color 0.3s ease, transform 0.2s ease",
+                        opacity: isUploading ? 0.7 : 1,
                     }}
                     className="new-outfit-btn"
                     onMouseOver={(e) => {
-                        e.currentTarget.style.backgroundColor = "#286090"
-                        e.currentTarget.style.transform = "scale(1.05)"
+                        if (!isUploading) {
+                            e.currentTarget.style.backgroundColor = "#286090"
+                            e.currentTarget.style.transform = "scale(1.05)"
+                        }
                     }}
                     onMouseOut={(e) => {
-                        e.currentTarget.style.backgroundColor = "#337ab7"
-                        e.currentTarget.style.transform = "scale(1)"
+                        if (!isUploading) {
+                            e.currentTarget.style.backgroundColor = "#337ab7"
+                            e.currentTarget.style.transform = "scale(1)"
+                        }
                     }}
+                    disabled={isUploading}
                 >
                     {isEditing ? "Update Outfit" : "Save Outfit"}
                 </button>
