@@ -35,7 +35,6 @@ export default function NavBar() {
                         <Link to="/catalog">Catalog</Link>
                         <Link to="/community">Community</Link>
 
-                        {/* Desktop Logout Button */}
                         <div className="desktopLogout">
                             <button onClick={handleLogout}>Logout</button>
                         </div>
@@ -62,7 +61,7 @@ export default function NavBar() {
                         <Link to="/community" onClick={() => setMenuOpen(false)}>Community</Link>
                         <Link to="/catalog" onClick={() => setMenuOpen(false)}>Catalog</Link>
 
-                        {/* Mobile Logout Button */}
+
                         <button onClick={() => { handleLogout(); setMenuOpen(false); }}>Logout</button>
                     </>
                 ) : (

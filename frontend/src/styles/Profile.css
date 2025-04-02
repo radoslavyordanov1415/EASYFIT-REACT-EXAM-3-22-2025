@@ -69,7 +69,6 @@
     border-bottom: 1px solid #eee;
     padding-bottom: 1rem;
     color: black;
-    /* Make the title black */
 }
 
 .stats-details {
@@ -85,7 +84,6 @@
     margin: 0 0 1rem 0;
     font-size: 1.2rem;
     color: black;
-    /* Make the subtitle black */
 }
 
 .stats-column ul {
@@ -98,14 +96,12 @@
     padding: 0.5rem 0;
     font-size: 1rem;
     color: black;
-    /* Make the list item text black */
 }
 
 .profile-recent h3 {
     margin: 0 0 2rem 0;
     font-size: 1.5rem;
     color: black;
-    /* Make the title black */
 }
 
 .outfits-grid {
@@ -136,13 +132,11 @@
     margin: 0 0 0.5rem 0;
     font-size: 1.2rem;
     color: black;
-    /* Make the title black */
 }
 
 .outfit-header p {
     margin: 0;
     color: black;
-    /* Make the paragraph text black */
     font-size: 0.9rem;
 }
 

@@ -21,7 +21,7 @@ export default function Edit() {
 
         const verifyAndFetchOutfit = async () => {
             try {
-                const response = await fetch(`https://localhost:5005/api/outfits/${outfitId}`, {
+                const response = await fetch(`http://localhost:5005/api/outfits/${outfitId}`, {
                     credentials: "include",
                 });
 
@@ -38,7 +38,7 @@ export default function Edit() {
             }
         };
         verifyAndFetchOutfit();
-    }, [outfitId, navigate, isLoggedIn]);
+    }, [outfitId, isLoggedIn, navigate]);
 
     if (loading) {
         return <p>Loading...</p>;

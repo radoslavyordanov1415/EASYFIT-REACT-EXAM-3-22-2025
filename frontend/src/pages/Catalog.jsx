@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import AlertBox from "../components/AlertBox"
-import LoadingSpinner from "../components/LoadingSpinner" // Add this import
+
+import LoadingSpinner from "../components/LoadingSpinner"
 import "../styles/Catalog.css"
 
 export default function Catalog() {
@@ -194,7 +194,7 @@ export default function Catalog() {
                                                 alt={`Clothing item ${key}`}
                                                 style={{
                                                     position: "absolute",
-                                                    left: item.x ? `${item.x}px` : "50%",
+                                                    left: item.x ? `${item.x + 2}px` : "50%",
                                                     top: item.y ? `${item.y}px` : "50%",
                                                     width: item.width ? `${item.width}px` : "100px",
                                                     height: item.height ? `${item.height}px` : "100px",

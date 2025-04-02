@@ -152,7 +152,6 @@ export default function Community() {
                             </div>
                         </Link>
                         <div className="outfit-actions">
-                            {/* Check if the current user is NOT the owner */}
                             {user?._id !== outfit.userId?._id ? (
                                 <>
                                     <button onClick={() => handleReaction(outfit._id, 'like')}>
@@ -163,7 +162,6 @@ export default function Community() {
                                     </button>
                                 </>
                             ) : (
-                                // If the user is the owner, only display the counts
                                 <>
                                     <button disabled style={{ cursor: 'default' }}>
                                         <ThumbUpIcon /> {outfit.likes?.length || 0}

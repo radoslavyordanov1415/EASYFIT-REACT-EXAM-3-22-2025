@@ -37,7 +37,6 @@ export default function CommentSection({ outfitId, comments, onCommentAdded }) {
             const data = await response.json();
             setNewComment('');
 
-            // Add the new comment to the list immediately
             if (onCommentAdded) {
                 onCommentAdded(data);
             }
@@ -75,7 +74,6 @@ export default function CommentSection({ outfitId, comments, onCommentAdded }) {
                             ) : (
                                 <PersonIcon />
                             )}
-                            {/* Change from comment.username to comment.userId.username */}
                             <span>{comment.userId?.username}</span>
                         </div>
                         <p>{comment.text}</p>
