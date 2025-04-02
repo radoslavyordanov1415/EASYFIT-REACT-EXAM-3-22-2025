@@ -61,6 +61,7 @@ EasyFit is an intuitive web application designed to streamline your morning rout
 - MongoDB with Mongoose
 - JWT Authentication
 - Multer for file handling
+- Cloudinary for image storage and manipulation
 - Remove.bg API integration
 
 ## Project Structure
@@ -119,6 +120,9 @@ MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_secret_key
 PORT=5005
 REMOVE_BG_API_KEY=your_api_key
+REACT_APP_CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+REACT_APP_CLOUDINARY_API_KEY=your_cloudinary_api_key
+REACT_APP_CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
 ### 4. Launch development servers:
