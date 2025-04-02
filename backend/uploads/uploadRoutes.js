@@ -1,65 +1,71 @@
-import express from "express"
-import multer from "multer"
-import path from "path"
-import axios from "axios"
-import FormData from "form-data"
-import fs from "fs"
-import dotenv from "dotenv"
+import express from "express";
+import multer from "multer";
+import axios from "axios";
+import FormData from "form-data";
+import cloudinary from "cloudinary";
+import dotenv from "dotenv";
+import streamifier from "streamifier";
+dotenv.config();
 
-dotenv.config()
+const router = express.Router();
 
-const router = express.Router()
+cloudinary.v2.config({
+    cloud_name: process.env.REACT_APP_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.REACT_APP_CLOUDINARY_API_KEY,
+    api_secret: process.env.REACT_APP_CLOUDINARY_API_SECRET,
+});
 
-const storage = multer.diskStorage({
-    destination: "./uploads/",
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
-        const fileExtension = path.extname(file.originalname)
-        cb(null, file.fieldname + "-" + uniqueSuffix + fileExtension)
-    },
-})
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-const upload = multer({ storage: storage })
+const uploadToCloudinary = (buffer) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+            { resource_type: "image" },
+            (error, result) => {
+                if (error) return reject(error);
+                resolve(result.secure_url);
+            }
+        );
+        streamifier.createReadStream(buffer).pipe(stream);
+    });
+};
 
 router.post("/upload", upload.single("image_file"), async (req, res) => {
     if (!req.file) {
-        return res.status(400).json({ message: "No file uploaded" })
+        return res.status(400).json({ message: "No file uploaded" });
     }
 
     try {
-        const formData = new FormData()
-        formData.append("image_file", fs.createReadStream(req.file.path))
-        formData.append("size", "auto")
+        let imageUrl = await uploadToCloudinary(req.file.buffer);
 
-        const response = await axios.post("https://api.remove.bg/v1.0/removebg", formData, {
-            headers: {
-                ...formData.getHeaders(),
-                "X-Api-Key": process.env.REMOVE_BG_API_KEY,
-            },
-            responseType: "arraybuffer",
-        })
+        if (process.env.REMOVE_BG_API_KEY) {
+            const formData = new FormData();
+            formData.append("image_file", req.file.buffer, {
+                filename: req.file.originalname,
+            });
+            formData.append("size", "auto");
 
-        const processedFilename = `processed-${req.file.filename}`
-        const processedPath = path.join("./uploads", processedFilename)
-        fs.writeFileSync(processedPath, response.data)
+            const response = await axios.post(
+                "https://api.remove.bg/v1.0/removebg",
+                formData,
+                {
+                    headers: {
+                        ...formData.getHeaders(),
+                        "X-Api-Key": process.env.REMOVE_BG_API_KEY,
+                    },
+                    responseType: "arraybuffer",
+                }
+            );
 
-        const imageUrl = `http://localhost:5005/uploads/${processedFilename}`
-        res.json({ imageUrl })
-    } catch (error) {
-        console.error("Background removal failed:", error)
-        console.error("Error details:", error.response ? error.response.data.toString() : error.message)
-        res.status(500).json({
-            message: "Background removal failed",
-            error: error.response ? error.response.data.toString() : error.message,
-        })
-    } finally {
-        try {
-            fs.unlinkSync(req.file.path)
-        } catch (unlinkError) {
-            console.error("Error deleting uploaded file:", unlinkError)
+            imageUrl = await uploadToCloudinary(response.data);
         }
+
+        res.json({ imageUrl });
+    } catch (error) {
+        console.error("Image processing failed:", error);
+        res.status(500).json({ message: "Image processing failed", error: error.message });
     }
-})
+});
 
-export default router
-
+export default router;
