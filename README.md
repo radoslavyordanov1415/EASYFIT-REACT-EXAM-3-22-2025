@@ -125,11 +125,44 @@ REACT_APP_CLOUDINARY_API_KEY=your_cloudinary_api_key
 REACT_APP_CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
+
+## remove.bg API Key Limitations
+
+The remove.bg API key used for background removal has usage limitations. If you encounter an error message indicating that you need to pay for usage, it means you've exceeded the free tier limits.
+
+### How to Obtain a New remove.bg API Key
+
+To continue using the background removal feature, you'll need to create a new account and generate a new API key:
+
+1.  **Create a New Account:** Go to [https://www.remove.bg/](https://www.remove.bg/) and sign up for a new account.
+2.  **Generate API Key:** Once logged in, navigate to your account settings or API documentation to find your API key.
+3.  **Update .env File:** Open the `.env` file in your project's root directory and replace the existing `REMOVE_BG_API_KEY` with your new API key.
+
+    ```
+    REMOVE_BG_API_KEY=your_new_api_key
+    ```
+
+    Replace `your_new_api_key` with the actual API key you generated.
+4.  **Restart Server:** After updating the `.env` file, restart your Node.js server to apply the changes.
+
+By following these steps, you can obtain a new remove.bg API key and continue using the background removal feature. 
+
 ### 4. Launch development servers:
 ```bash
 # Start backend
 cd backend
 npm run dev
+
+## Troubleshooting
+
+### Permission Denied when Running Nodemon
+
+If you encounter a "permission denied" error when trying to run `nodemon`, especially on Linux or macOS, you might need to give execute permissions to the `nodemon` script.
+
+Run the following command in your terminal:
+
+```bash
+chmod +x node_modules/.bin/nodemon
 
 # Start frontend
 cd frontend
