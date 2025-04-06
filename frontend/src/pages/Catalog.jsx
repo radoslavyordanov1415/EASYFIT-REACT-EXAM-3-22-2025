@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import "../styles/Catalog.css";
-import { fetchOutfits, deleteOutfit } from "../api/apiHelper.js"; // Import API functions
+import { fetchOutfits, deleteOutfit } from "../api/apiHelper.js";
 
 export default function Catalog() {
     const [outfits, setOutfits] = useState([]);

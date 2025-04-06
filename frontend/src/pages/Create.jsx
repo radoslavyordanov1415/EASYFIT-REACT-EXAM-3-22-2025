@@ -63,12 +63,21 @@ function Create() {
 
                     if (outfit.appliedClothing) {
                         setAppliedClothing(outfit.appliedClothing)
-                        setUploadedParts({
-                            head: !!outfit.appliedClothing.head,
-                            chest: !!outfit.appliedClothing.chest,
-                            legs: !!outfit.appliedClothing.legs,
-                            feet: !!outfit.appliedClothing.feet,
+
+                        const newUploadedParts = {
+                            head: false,
+                            chest: false,
+                            legs: false,
+                            feet: false,
+                        }
+
+                        Object.keys(outfit.appliedClothing).forEach((part) => {
+                            if (newUploadedParts.hasOwnProperty(part)) {
+                                newUploadedParts[part] = true
+                            }
                         })
+
+                        setUploadedParts(newUploadedParts)
                     }
 
                     if (outfit.mannequinImage) {
@@ -95,32 +104,19 @@ function Create() {
         setFormState((prev) => ({ ...prev, [field]: value }))
     }
 
-    function handleOutfitLoaded(outfit) {
-        if (outfit) {
-            setFormState({
-                name: outfit.name || "",
-                season: outfit.season || "",
-                occasion: outfit.occasion || "",
-                comfortLevel: outfit.comfortLevel || "",
-                budget: outfit.budget || "",
-                fitType: outfit.fitType || "",
-                description: outfit.description || "",
-            })
+    const handlePhotoRemoved = (part) => {
+        setUploadedParts((prev) => ({
+            ...prev,
+            [part]: false,
+        }))
 
-            if (outfit.appliedClothing) {
-                setAppliedClothing(outfit.appliedClothing)
-                setUploadedParts({
-                    head: !!outfit.appliedClothing.head,
-                    chest: !!outfit.appliedClothing.chest,
-                    legs: !!outfit.appliedClothing.legs,
-                    feet: !!outfit.appliedClothing.feet,
-                })
-            }
+        setAppliedClothing((prev) => {
+            const updated = { ...prev }
+            delete updated[part]
+            return updated
+        })
 
-            if (outfit.mannequinImage) {
-                setMannequinImage(outfit.mannequinImage)
-            }
-        }
+        setSelectedPart(null)
     }
 
     const handleUploadStart = () => {
@@ -141,21 +137,6 @@ function Create() {
                 [part]: photoData,
             }))
         }
-    }
-
-    const handlePhotoRemoved = (part) => {
-        setUploadedParts((prev) => ({
-            ...prev,
-            [part]: false,
-        }))
-
-        setAppliedClothing((prev) => {
-            const updated = { ...prev }
-            delete updated[part]
-            return updated
-        })
-
-        setSelectedPart(null)
     }
 
     const validateForm = useCallback(() => {
@@ -286,7 +267,6 @@ function Create() {
                     <Mannequin
                         selectedPart={selectedPart}
                         formState={formState}
-                        onOutfitLoaded={handleOutfitLoaded}
                         onPhotoUploaded={handlePhotoUploaded}
                         onPhotoRemoved={handlePhotoRemoved}
                         validateForm={validateForm}

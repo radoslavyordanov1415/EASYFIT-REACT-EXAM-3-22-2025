@@ -5,7 +5,6 @@ import { EDITOR_WIDTH, EDITOR_HEIGHT } from "./constants/MannequinConstants"
 export default function Mannequin({
     selectedPart,
     formState,
-    onOutfitLoaded,
     onPhotoUploaded,
     onPhotoRemoved,
     validateForm,
@@ -25,7 +24,7 @@ export default function Mannequin({
         handleDeleteClothing,
         handleMouseDown,
         handleResizeMouseDown,
-    } = useMannequin(selectedPart, formState, onOutfitLoaded, onPhotoUploaded)
+    } = useMannequin(selectedPart, formState, onPhotoUploaded)
 
     const handleFileChangeWithCallback = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -37,7 +36,10 @@ export default function Mannequin({
 
     const handleDeleteClothingWithCallback = (part) => {
         handleDeleteClothing(part)
-        onPhotoRemoved(part)
+
+        if (onPhotoRemoved) {
+            onPhotoRemoved(part)
+        }
     }
 
     const handleSave = () => {

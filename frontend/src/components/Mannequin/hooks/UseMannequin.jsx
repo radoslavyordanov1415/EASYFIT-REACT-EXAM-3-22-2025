@@ -7,9 +7,8 @@ import { useClothingResize } from "./UseClothingResize"
 import { useClothingUpload } from "./useCloathingUpload"
 import { useOutfitSave } from "./OutfitSave"
 
-const useMannequin = (selectedPart, formState, onOutfitLoaded, onPhotoUploaded) => {
-    const { isEditing, mannequinImage, setMannequinImage, appliedClothing, setAppliedClothing } =
-        useOutfitLoader(onOutfitLoaded)
+const useMannequin = (selectedPart, formState, onPhotoUploaded) => {
+    const { isEditing, mannequinImage, setMannequinImage, appliedClothing, setAppliedClothing } = useOutfitLoader()
 
     const { toggleMannequinGender } = useMannequinControls(mannequinImage, setMannequinImage)
 
@@ -23,13 +22,7 @@ const useMannequin = (selectedPart, formState, onOutfitLoaded, onPhotoUploaded) 
         onPhotoUploaded,
     )
 
-    const { saveStatus, handleSave } = useOutfitSave(
-        isEditing,
-        mannequinImage,
-        appliedClothing,
-        formState,
-        onOutfitLoaded,
-    )
+    const { saveStatus, handleSave } = useOutfitSave(isEditing, mannequinImage, appliedClothing, formState)
 
     return {
         isEditing,

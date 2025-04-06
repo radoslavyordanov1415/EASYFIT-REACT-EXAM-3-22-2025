@@ -7,7 +7,7 @@ export const useClothingUpload = (selectedPart, setAppliedClothing, onPhotoUploa
     const fileInputRef = useRef(null)
 
     useEffect(() => {
-        if (selectedPart) {
+        if (selectedPart && fileInputRef.current) {
             fileInputRef.current.click()
         }
     }, [selectedPart])
@@ -32,8 +32,13 @@ export const useClothingUpload = (selectedPart, setAppliedClothing, onPhotoUploa
 
             const data = await response.json()
 
-            e.target.value = ""
-            if (fileInputRef.current) fileInputRef.current.value = ""
+            if (e.target) {
+                e.target.value = ""
+            }
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ""
+            }
 
             const img = new Image()
             img.src = data.imageUrl
