@@ -1,87 +1,94 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import AlertBox from "../components/AlertBox";
-import CommentSection from "../components/Mannequin/Community/CommentSection";
-import "../styles/OutfitDetails.css";
-import { useAuth } from "../components/context/AuthenticationContex";
+"use client"
+
+import { useEffect, useState } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import AlertBox from "../components/AlertBox"
+import CommentSection from "../components/Mannequin/Community/CommentSection"
+import "../styles/OutfitDetails.css"
+import { useAuth } from "../components/context/AuthenticationContex"
 
 export default function OutfitDetails() {
-    const { outfitId } = useParams();
-    const [outfit, setOutfit] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [alert, setAlert] = useState({ message: "", type: "" });
-    const [deleteConfirmation, setDeleteConfirmation] = useState(false);
-    const navigate = useNavigate();
-    const { user } = useAuth();
+    const { outfitId } = useParams()
+    const [outfit, setOutfit] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [alert, setAlert] = useState({ message: "", type: "" })
+    const [deleteConfirmation, setDeleteConfirmation] = useState(false)
+    const navigate = useNavigate()
+    const { user } = useAuth()
 
     useEffect(() => {
         const fetchOutfitDetails = async () => {
             try {
                 const response = await fetch(`http://localhost:5005/api/outfits/${outfitId}`, {
                     credentials: "include",
-                });
+                })
 
                 if (!response.ok) {
-                    throw new Error("Error fetching outfit details");
+                    throw new Error("Error fetching outfit details")
                 }
 
-                const data = await response.json();
-                setOutfit(data);
+                const data = await response.json()
+                setOutfit(data)
             } catch (err) {
-                console.error("Error fetching outfit details:", err);
+                console.error("Error fetching outfit details:", err)
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
+        }
 
         if (outfitId) {
-            fetchOutfitDetails();
+            fetchOutfitDetails()
         }
-    }, [outfitId]);
+    }, [outfitId])
 
     const handleEdit = () => {
-        navigate(`/edit/${outfitId}`);
-    };
+        navigate(`/edit/${outfitId}`)
+    }
 
     const handleDeleteClick = () => {
-        setDeleteConfirmation(true);
-    };
+        setDeleteConfirmation(true)
+    }
 
     const handleConfirmDelete = async () => {
         try {
             const response = await fetch(`http://localhost:5005/api/outfits/delete/${outfitId}`, {
                 method: "DELETE",
                 credentials: "include",
-            });
+            })
             if (response.ok) {
-                setAlert({ message: "Outfit deleted successfully", type: "success" });
-                setDeleteConfirmation(false);
-                setTimeout(() => navigate("/catalog"), 1500);
+                setAlert({ message: "Outfit deleted successfully", type: "success" })
+                setDeleteConfirmation(false)
+                setTimeout(() => navigate("/catalog"), 1500)
             }
         } catch (err) {
-            setAlert({ message: "Failed to delete outfit", type: "error" });
-            setDeleteConfirmation(false);
+            setAlert({ message: "Failed to delete outfit", type: "error" })
+            setDeleteConfirmation(false)
         }
-    };
+    }
 
     const handleCancelDelete = () => {
-        setDeleteConfirmation(false);
-    };
+        setDeleteConfirmation(false)
+    }
 
     const formatDate = (dateString) => {
-        const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
-        return new Date(dateString).toLocaleDateString(undefined, options);
-    };
+        const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }
+        return new Date(dateString).toLocaleDateString(undefined, options)
+    }
 
     const handleCommentAdded = (newComment) => {
-        setOutfit(prevOutfit => {
-            if (!prevOutfit) return null;
+        setOutfit((prevOutfit) => {
+            if (!prevOutfit) return null
+
+            const commentExists = prevOutfit.comments.some((comment) => comment._id === newComment._id)
+
+            if (commentExists) return prevOutfit
+
             return {
                 ...prevOutfit,
-                comments: [...prevOutfit.comments, newComment]
-            };
-        });
-    };
+                comments: [...prevOutfit.comments, newComment],
+            }
+        })
+    }
 
     if (loading) {
         return (
@@ -89,7 +96,7 @@ export default function OutfitDetails() {
                 <div className="loading-spinner"></div>
                 <p>Loading outfit details...</p>
             </div>
-        );
+        )
     }
 
     if (!outfit) {
@@ -100,10 +107,10 @@ export default function OutfitDetails() {
                     Back to Catalog
                 </Link>
             </div>
-        );
+        )
     }
 
-    const isOwner = user && outfit && outfit.userId === user.userId;
+    const isOwner = user && outfit && outfit.userId === user.userId
 
     return (
         <div className="outfit-details-container">
@@ -146,7 +153,7 @@ export default function OutfitDetails() {
                                     zIndex: 10,
                                 }}
                             />
-                        );
+                        )
                     })}
                 </div>
 
@@ -198,11 +205,7 @@ export default function OutfitDetails() {
                 </Link>
             </div>
             <div className="comments-section">
-                <CommentSection
-                    outfitId={outfitId}
-                    comments={outfit.comments || []}
-                    onCommentAdded={handleCommentAdded}
-                />
+                <CommentSection outfitId={outfitId} comments={outfit.comments || []} onCommentAdded={handleCommentAdded} />
             </div>
             {deleteConfirmation && (
                 <div className="confirmation-overlay">
@@ -210,12 +213,17 @@ export default function OutfitDetails() {
                         <h3>Confirm Delete</h3>
                         <p>Are you sure you want to delete this outfit?</p>
                         <div className="confirmation-buttons">
-                            <button onClick={handleConfirmDelete} className="delete-btn">Delete</button>
-                            <button onClick={handleCancelDelete} className="cancel-btn">Cancel</button>
+                            <button onClick={handleConfirmDelete} className="delete-btn">
+                                Delete
+                            </button>
+                            <button onClick={handleCancelDelete} className="cancel-btn">
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
         </div>
-    );
+    )
 }
+
