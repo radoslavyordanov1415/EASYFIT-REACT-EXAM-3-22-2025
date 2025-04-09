@@ -90,6 +90,17 @@ export default function OutfitDetails() {
         })
     }
 
+    const handleCommentDeleted = (commentId) => {
+        setOutfit((prevOutfit) => {
+            if (!prevOutfit) return null
+
+            return {
+                ...prevOutfit,
+                comments: prevOutfit.comments.filter((comment) => comment._id !== commentId),
+            }
+        })
+    }
+
     if (loading) {
         return (
             <div className="loading-container">
@@ -110,8 +121,7 @@ export default function OutfitDetails() {
         )
     }
 
-    const isOwner = user && outfit && outfit.userId === user.userId
-
+    const isOwner = user && outfit && outfit.userId._id.toString() === user.userId;
     return (
         <div className="outfit-details-container">
             <div className="outfit-details-header">
@@ -205,7 +215,12 @@ export default function OutfitDetails() {
                 </Link>
             </div>
             <div className="comments-section">
-                <CommentSection outfitId={outfitId} comments={outfit.comments || []} onCommentAdded={handleCommentAdded} />
+                <CommentSection
+                    outfitId={outfitId}
+                    comments={outfit.comments || []}
+                    onCommentAdded={handleCommentAdded}
+                    onCommentDeleted={handleCommentDeleted}
+                />
             </div>
             {deleteConfirmation && (
                 <div className="confirmation-overlay">

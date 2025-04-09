@@ -4,14 +4,16 @@ import { useState } from "react"
 import { useAuth } from "../../context/AuthenticationContex"
 import AlertBox from "../../AlertBox"
 import PersonIcon from "@mui/icons-material/Person"
+import DeleteIcon from "@mui/icons-material/Delete"
 import "../../../styles/CommentSection.css"
 
-export default function CommentSection({ outfitId, comments, onCommentAdded }) {
+export default function CommentSection({ outfitId, comments, onCommentAdded, onCommentDeleted }) {
     const [newComment, setNewComment] = useState("")
     const [error, setError] = useState("")
     const [successMessage, setSuccessMessage] = useState("")
     const { user } = useAuth()
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isDeletingComment, setIsDeletingComment] = useState(null)
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault()
@@ -53,6 +55,38 @@ export default function CommentSection({ outfitId, comments, onCommentAdded }) {
         }
     }
 
+    const handleDeleteComment = async (commentId) => {
+        setIsDeletingComment(commentId)
+        setError("")
+
+        try {
+            const response = await fetch(`http://localhost:5005/api/outfits/${outfitId}/comment/${commentId}`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json()
+                throw new Error(errorData.message || "Failed to delete comment")
+            }
+
+            setSuccessMessage("Comment deleted successfully")
+
+            if (onCommentDeleted) {
+                onCommentDeleted(commentId)
+            }
+
+            setTimeout(() => {
+                setSuccessMessage("")
+            }, 3000)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setIsDeletingComment(null)
+        }
+    }
+
     return (
         <div className="comment-section">
             {error && <AlertBox message={error} type="error" />}
@@ -67,20 +101,35 @@ export default function CommentSection({ outfitId, comments, onCommentAdded }) {
                 </form>
             )}
             <div className="comments-list">
-                {comments.map((comment) => (
-                    <div key={comment._id} className="comment">
-                        <div className="comment-author">
-                            {comment.userId?.avatar ? (
-                                <img src={comment.userId.avatar || "/placeholder.svg"} alt={comment.userId.username} />
-                            ) : (
-                                <PersonIcon />
-                            )}
-                            <span>{comment.userId?.username}</span>
+                {comments.map((comment) => {
+                    const isOwner = user && comment.userId && comment.userId._id === user._id; return (
+                        <div key={comment._id} className={`comment ${isOwner ? "own-comment" : ""}`}>
+                            <div className="comment-header">
+                                <div className="comment-author">
+                                    {comment.userId?.avatar ? (
+                                        <img src={comment.userId.avatar || "/placeholder.svg"} alt={comment.userId.username} />
+                                    ) : (
+                                        <PersonIcon />
+                                    )}
+                                    <span>{comment.userId?.username}</span>
+                                </div>
+                                {isOwner && (
+                                    <button
+                                        onClick={() => handleDeleteComment(comment._id)}
+                                        disabled={isDeletingComment === comment._id}
+                                        className="delete-comment-btn"
+                                    >
+                                        {isDeletingComment === comment._id ? "Deleting..." : <DeleteIcon />}
+                                    </button>
+                                )}
+                            </div>
+                            <p>{comment.text}</p>
+                            <div className="comment-footer">
+                                <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
+                            </div>
                         </div>
-                        <p>{comment.text}</p>
-                        <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
         </div>
     )

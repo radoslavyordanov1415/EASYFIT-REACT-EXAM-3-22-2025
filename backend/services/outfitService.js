@@ -90,14 +90,17 @@ const outfitService = {
         }
     },
 
-    getOutfitById: async (outfitId) => {
+    getOutfitById: async (id) => {
         try {
-            return await Outfit.findById(outfitId).populate({
-                path: "comments.userId",
-                select: "username avatar",
-            })
+            return await Outfit.findById(id)
+                .populate('userId', 'username avatar')
+                .populate({
+                    path: 'comments.userId',
+                    select: 'username avatar',
+                })
+                .exec();
         } catch (err) {
-            throw err
+            throw new Error("Error fetching outfit");
         }
     },
 
@@ -107,7 +110,7 @@ const outfitService = {
                 .populate("userId", "username avatar")
                 .populate({
                     path: "comments.userId",
-                    select: "username avatar",
+                    select: "username avatar _id",
                 })
                 .sort({ createdAt: -1 })
         } catch (err) {
@@ -141,13 +144,33 @@ const outfitService = {
 
             const updatedOutfit = await Outfit.findById(outfitId).populate({
                 path: "comments.userId",
-                select: "username avatar",
+                select: "username avatar _id",
             })
 
             return updatedOutfit
         } catch (err) {
             throw err
         }
+    },
+
+    deleteComment: async (outfitId, commentId, userId) => {
+        const outfit = await Outfit.findById(outfitId);
+        if (!outfit) throw new Error("Outfit not found");
+
+        const commentIndex = outfit.comments.findIndex(
+            c => c._id.toString() === commentId
+        );
+
+        if (commentIndex === -1) throw new Error("Comment not found");
+
+        if (outfit.comments[commentIndex].userId.toString() !== userId && !isAdmin(userId)) {
+            throw new Error("Unauthorized to delete comment");
+        }
+
+        outfit.comments.splice(commentIndex, 1);
+
+        await outfit.save();
+        return { message: "Comment deleted successfully" };
     },
 }
 

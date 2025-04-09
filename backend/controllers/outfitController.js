@@ -112,6 +112,18 @@ const outfitController = {
             res.status(500).json({ message: err.message })
         }
     },
+
+    deleteComment: async (req, res) => {
+        try {
+            const result = await outfitService.deleteComment(req.params.outfitId, req.params.commentId, req.userId)
+            res.json(result)
+        } catch (err) {
+            console.error("Error deleting comment:", err)
+            res
+                .status(err.message.includes("not found") || err.message.includes("unauthorized") ? 404 : 500)
+                .json({ message: err.message })
+        }
+    },
 }
 
 export default outfitController

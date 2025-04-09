@@ -1,91 +1,178 @@
-/* In CommentSection.css */
 .comment-section {
     margin-top: 2rem;
-    padding: 2rem;
-    background: #f9f9f9;
-    border-radius: 12px;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f9f9f9;
 }
 
 .comment-section h3 {
-    color: #2c3e50;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #333;
 }
 
 .comment-section form {
-    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .comment-section textarea {
-    width: 100%;
-    height: 100px;
-    padding: 1rem;
+    padding: 0.75rem;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 4px;
     resize: vertical;
-    margin-bottom: 1rem;
+    min-height: 80px;
+    font-family: inherit;
 }
 
-.comment-section button[type="submit"] {
-    background: #3498db;
+.comment-section button {
+    padding: 0.5rem 1rem;
+    background-color: #4a90e2;
     color: white;
     border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    font-weight: 500;
+    align-self: flex-end;
 }
 
-.comment-section button[type="submit"]:hover {
-    background: #2980b9;
+.comment-section button:hover {
+    background-color: #3a7bc8;
+}
+
+.comment-section button:disabled {
+    background-color: #a0c0e8;
+    cursor: not-allowed;
 }
 
 .comments-list {
-    max-height: 400px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .comment {
-    background: white;
     padding: 1rem;
+    border: 1px solid #eee;
     border-radius: 8px;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: white;
+    position: relative;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
 }
 
 .comment-author {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
+    gap: 0.5rem;
 }
 
 .comment-author img {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     object-fit: cover;
 }
 
 .comment-author span {
-    font-weight: 600;
-    color: #2c3e50;
+    font-weight: 500;
+    color: #333;
 }
 
 .comment p {
-    color: #34495e;
-    line-height: 1.6;
     margin-bottom: 0.5rem;
+    color: #555;
+    padding-right: 1rem;
 }
 
 .comment small {
-    color: #7f8c8d;
-    font-size: 0.9rem;
+    color: #888;
+    font-size: 0.8rem;
 }
 
-.owner-comment-notice {
-    padding: 1rem;
-    background: #f0f0f0;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    color: #666;
+.comment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.delete-comment-btn {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.delete-comment-btn:hover {
+    color: #c0392b;
+    transform: scale(1.1);
+}
+
+.delete-comment-btn:disabled {
+    color: #f5b7b1;
+    cursor: not-allowed;
+}
+
+/* New prominent delete button */
+.delete-comment-btn-prominent {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-comment-btn-prominent:hover {
+    background-color: #c0392b;
+}
+
+.delete-comment-btn-prominent:disabled {
+    background-color: #f5b7b1;
+    cursor: not-allowed;
+}
+
+.comment.own-comment {
+    border-left: 3px solid #4a90e2;
+}
+
+.delete-comment-btn {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.delete-comment-btn:hover {
+    color: #c0392b;
+}
+
+.delete-comment-btn:disabled {
+    color: #f5b7b1;
+    cursor: not-allowed;
+}
+
+.own-comment {
+    border-left: 3px solid #4a90e2;
+    background-color: #f8f9fa;
 }
